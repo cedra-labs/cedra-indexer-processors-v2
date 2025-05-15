@@ -15,7 +15,7 @@ use crate::processors::{
     },
 };
 use anyhow::Result;
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::WriteResource;
+use cedra_indexer_processor_sdk::aptos_protos::transaction::v1::WriteResource;
 use const_format::formatcp;
 
 pub const COIN_ADDR: &str = "0x0000000000000000000000000000000000000000000000000000000000000001";

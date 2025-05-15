@@ -13,7 +13,7 @@ use crate::{
     utils::counters::PROCESSOR_UNKNOWN_TYPE_COUNT,
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::utils::time::parse_timestamp,
     aptos_protos::transaction::v1::{
         transaction::TxnData, write_set_change::Change, Transaction, WriteResource, WriteTableItem,

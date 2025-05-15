@@ -10,7 +10,7 @@ use crate::{
     schema::block_metadata_transactions,
 };
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::utils::time::{compute_nanos_since_epoch, parse_timestamp},
     aptos_protos::{
         transaction::v1::BlockMetadataTransaction as ProtoBlockMetadataTransaction,
@@ -155,7 +155,7 @@ impl From<BlockMetadataTransaction> for ParquetBlockMetadataTransaction {
 mod tests {
     use super::*;
     use crate::parquet::record::RecordWriter;
-    use aptos_indexer_processor_sdk::cedra_indexer_transaction_stream::utils::time::compute_nanos_since_epoch;
+    use cedra_indexer_processor_sdk::cedra_indexer_transaction_stream::utils::time::compute_nanos_since_epoch;
     use chrono::{DateTime, Utc};
     use parquet::file::writer::SerializedFileWriter;
     use serde_json::json;

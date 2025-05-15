@@ -10,7 +10,7 @@ use crate::processors::{
 };
 use ahash::{AHashMap, AHashSet};
 use anyhow::{Context, Result};
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::{Event, WriteResource},
     utils::{
         convert::{deserialize_from_string, standardize_address, truncate_str},

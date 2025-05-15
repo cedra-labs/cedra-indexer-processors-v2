@@ -6,7 +6,7 @@
 
 use crate::processors::default::models::move_resources::MoveResource;
 use anyhow::Context;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::utils::time::parse_timestamp_secs,
     aptos_protos::transaction::v1::{Event, WriteResource},
     utils::convert::{

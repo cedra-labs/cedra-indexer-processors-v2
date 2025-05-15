@@ -20,7 +20,7 @@ use crate::{
     schema::token_activities_v2,
 };
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::Event, utils::convert::standardize_address,
 };
 use bigdecimal::{BigDecimal, One, ToPrimitive, Zero};

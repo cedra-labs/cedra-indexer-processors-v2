@@ -4,7 +4,7 @@
 #![allow(clippy::extra_unused_lifetimes)]
 
 use crate::schema::backfill_processor_status;
-use aptos_indexer_processor_sdk::postgres::utils::database::DbPoolConnection;
+use cedra_indexer_processor_sdk::postgres::utils::database::DbPoolConnection;
 use diesel::{
     deserialize,
     deserialize::{FromSql, FromSqlRow},

@@ -9,7 +9,7 @@ use crate::{
     MIGRATIONS,
 };
 use anyhow::Result;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::TransactionStreamConfig,
     builder::ProcessorBuilder,
     common_steps::{

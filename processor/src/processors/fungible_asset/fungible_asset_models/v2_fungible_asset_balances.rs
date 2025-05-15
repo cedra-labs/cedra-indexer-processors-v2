@@ -33,7 +33,7 @@ use crate::{
 };
 use ahash::AHashMap;
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::{DeleteResource, WriteResource},
     utils::{
         constants::{APTOS_COIN_TYPE_STR, APT_METADATA_ADDRESS_HEX, APT_METADATA_ADDRESS_RAW},

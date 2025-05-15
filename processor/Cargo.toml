@@ -16,7 +16,7 @@ ahash = { workspace = true }
 allocative = { workspace = true }
 allocative_derive = { workspace = true }
 anyhow = { workspace = true }
-aptos-indexer-processor-sdk = { workspace = true }
+cedra-indexer-processor-sdk = { workspace = true }
 async-trait = { workspace = true }
 bcs = { workspace = true }
 bigdecimal = { workspace = true }
@@ -68,7 +68,7 @@ unescape = { workspace = true }
 url = { workspace = true }
 
 [dev-dependencies]
-aptos-indexer-processor-sdk = { workspace = true, features = [
+cedra-indexer-processor-sdk = { workspace = true, features = [
     "testing_framework",
 ] }
 
@@ -79,7 +79,7 @@ jemallocator = { version = "0.5.0", features = [
 ] }
 
 [features]
-libpq = ["aptos-indexer-processor-sdk/postgres_full", "diesel/postgres"]
+libpq = ["cedra-indexer-processor-sdk/postgres_full", "diesel/postgres"]
 # When using the default features we enable the diesel/postgres feature. We configure
 # it in a feature so the CLI can opt out, since it cannot tolerate the libpq dep.
 # Recall that features should always be additive.

@@ -13,7 +13,7 @@ use crate::{
 };
 use ahash::AHashMap;
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::postgres::utils::database::DbPoolConnection;
+use cedra_indexer_processor_sdk::postgres::utils::database::DbPoolConnection;
 use diesel::query_dsl::methods::SelectDsl;
 use diesel_async::RunQueryDsl;
 use field_count::FieldCount;

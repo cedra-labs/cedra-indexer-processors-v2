@@ -15,7 +15,7 @@ use crate::{
 };
 use ahash::AHashMap;
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::{DeleteTableItem, WriteTableItem},
     utils::convert::standardize_address,
 };

@@ -10,7 +10,7 @@ use crate::{
     utils::counters::PROCESSOR_UNKNOWN_TYPE_COUNT,
 };
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::utils::time::parse_timestamp,
     aptos_protos::transaction::v1::{transaction::TxnData, Transaction},
     utils::convert::{standardize_address, u64_to_bigdecimal},

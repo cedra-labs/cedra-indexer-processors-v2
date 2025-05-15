@@ -21,7 +21,7 @@ use crate::{
 };
 use allocative_derive::Allocative;
 use anyhow::Context;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::{DeleteResource, WriteResource, WriteTableItem},
     utils::convert::standardize_address,
 };

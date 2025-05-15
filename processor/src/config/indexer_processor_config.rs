@@ -31,7 +31,7 @@ use crate::{
     },
 };
 use anyhow::Result;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::TransactionStreamConfig, server_framework::RunnableConfig,
     traits::processor_trait::ProcessorTrait,
 };

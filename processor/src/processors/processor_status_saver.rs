@@ -9,7 +9,7 @@ use crate::{
     schema::backfill_processor_status,
 };
 use anyhow::Result;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::utils::time::parse_timestamp,
     common_steps::ProcessorStatusSaver,
     postgres::{
@@ -344,7 +344,7 @@ mod tests {
         MIGRATIONS,
     };
     use ahash::AHashMap;
-    use aptos_indexer_processor_sdk::{
+    use cedra_indexer_processor_sdk::{
         cedra_indexer_transaction_stream::{
             utils::additional_headers::AdditionalHeaders, TransactionStreamConfig,
         },

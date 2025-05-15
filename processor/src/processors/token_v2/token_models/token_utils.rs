@@ -6,7 +6,7 @@
 
 use crate::db::resources::TOKEN_ADDR;
 use anyhow::{Context, Result};
-use aptos_indexer_processor_sdk::utils::{
+use cedra_indexer_processor_sdk::utils::{
     convert::{
         deserialize_from_string, deserialize_string_from_hexstring, standardize_address,
         truncate_str,

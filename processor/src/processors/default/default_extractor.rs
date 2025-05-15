@@ -6,7 +6,7 @@ use crate::processors::default::{
     },
     process_transactions,
 };
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::Transaction,
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},
     types::transaction_context::TransactionContext,

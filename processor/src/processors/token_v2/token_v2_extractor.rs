@@ -10,7 +10,7 @@ use crate::processors::token_v2::{
     },
     token_v2_processor_helpers::parse_v2_token,
 };
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::Transaction,
     postgres::utils::database::{ArcDbPool, DbContext},
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},

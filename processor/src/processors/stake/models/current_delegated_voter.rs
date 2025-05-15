@@ -12,7 +12,7 @@ use crate::{
     schema::current_delegated_voter,
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::WriteTableItem, postgres::utils::database::DbPoolConnection,
     utils::convert::standardize_address,
 };

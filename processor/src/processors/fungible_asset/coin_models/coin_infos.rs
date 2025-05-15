@@ -7,7 +7,7 @@
 
 use super::coin_utils::{CoinInfoType, CoinResource};
 use crate::schema::coin_infos;
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::WriteResource;
+use cedra_indexer_processor_sdk::aptos_protos::transaction::v1::WriteResource;
 use field_count::FieldCount;
 use serde::{Deserialize, Serialize};
 

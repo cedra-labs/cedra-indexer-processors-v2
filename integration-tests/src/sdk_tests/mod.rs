@@ -1,5 +1,5 @@
 use crate::diff_test_helper::remove_transaction_timestamp;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     testing_framework::{
         database::{PostgresTestDatabase, TestDatabase},
         sdk_test_context::{remove_inserted_at, SdkTestContext},

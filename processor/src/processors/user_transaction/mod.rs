@@ -14,7 +14,7 @@ use crate::{
     },
     utils::counters::PROCESSOR_UNKNOWN_TYPE_COUNT,
 };
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::aptos_protos::transaction::v1::{
     transaction::TxnData, Transaction,
 };
 

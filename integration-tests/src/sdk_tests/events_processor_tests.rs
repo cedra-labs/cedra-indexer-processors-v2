@@ -1,5 +1,5 @@
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
+use cedra_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
 use processor::config::{
     db_config::{DbConfig, PostgresConfig},
     indexer_processor_config::IndexerProcessorConfig,
@@ -51,7 +51,7 @@ mod tests {
             setup_test_environment, validate_json, DEFAULT_OUTPUT_FOLDER,
         },
     };
-    use aptos_indexer_processor_sdk::{
+    use cedra_indexer_processor_sdk::{
         aptos_protos::transaction::v1::Transaction,
         testing_framework::{cli_parser::get_test_config, database::TestDatabase},
         traits::processor_trait::ProcessorTrait,

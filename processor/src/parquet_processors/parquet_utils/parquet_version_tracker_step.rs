@@ -1,6 +1,6 @@
 use crate::parquet_processors::ParquetTypeEnum;
 use anyhow::Result;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     traits::{
         pollable_async_step::PollableAsyncRunType, NamedStep, PollableAsyncStep, Processable,
     },

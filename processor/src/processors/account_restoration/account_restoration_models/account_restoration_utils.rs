@@ -4,7 +4,7 @@
 // This is required because a diesel macro makes clippy sad
 #![allow(clippy::extra_unused_lifetimes)]
 
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::aptos_protos::transaction::v1::{
     transaction::TxnData, Transaction,
 };
 use hex;

@@ -18,7 +18,7 @@ use crate::{
 };
 use ahash::AHashMap;
 use allocative::Allocative;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::WriteResource, utils::convert::standardize_address,
 };
 use diesel::prelude::*;

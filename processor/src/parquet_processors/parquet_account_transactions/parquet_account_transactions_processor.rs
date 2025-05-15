@@ -17,7 +17,7 @@ use crate::{
     processors::account_transactions::account_transactions_model::ParquetAccountTransaction,
     MIGRATIONS,
 };
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::TransactionStreamConfig,
     builder::ProcessorBuilder,
     common_steps::{TransactionStreamStep, DEFAULT_UPDATE_PROCESSOR_STATUS_SECS},

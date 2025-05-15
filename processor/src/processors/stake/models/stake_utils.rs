@@ -5,7 +5,7 @@ use crate::processors::{
     default::models::move_resources::MoveResource, token_v2::token_models::token_utils::Table,
 };
 use anyhow::{Context, Result};
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::WriteResource,
     utils::convert::{deserialize_from_string, standardize_address},
 };

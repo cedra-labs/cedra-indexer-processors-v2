@@ -27,7 +27,7 @@ use crate::{
 use ahash::AHashMap;
 use allocative::Allocative;
 use anyhow::Context;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::{Event, TransactionInfo, UserTransactionRequest},
     utils::convert::{bigdecimal_to_u64, standardize_address},
 };

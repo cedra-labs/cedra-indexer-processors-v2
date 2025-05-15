@@ -13,7 +13,7 @@ use crate::{
     schema::public_key_auth_keys,
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::aptos_protos::transaction::v1::{
     account_signature::{Signature as AccountSignature, Type as AccountSignatureTypeEnum},
     any_public_key::Type as AnyPublicKeyEnum,
     signature::Signature as SignatureEnum,

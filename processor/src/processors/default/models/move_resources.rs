@@ -6,7 +6,7 @@
 use crate::parquet_processors::parquet_utils::util::{HasVersion, NamedTable};
 use allocative_derive::Allocative;
 use anyhow::{Context, Result};
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::{
         DeleteResource, MoveStructTag as MoveStructTagPB, WriteResource,
     },

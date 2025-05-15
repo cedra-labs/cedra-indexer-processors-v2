@@ -11,7 +11,7 @@ use crate::{
     schema::{coin_balances, current_coin_balances},
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::WriteResource, utils::convert::standardize_address,
 };
 use bigdecimal::BigDecimal;

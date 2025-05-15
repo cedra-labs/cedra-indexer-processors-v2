@@ -10,7 +10,7 @@ use crate::{
     schema::coin_supply,
 };
 use anyhow::Context;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::WriteTableItem,
     utils::{constants::APTOS_COIN_TYPE_STR, extract::hash_str},
 };

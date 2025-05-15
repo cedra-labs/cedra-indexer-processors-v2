@@ -3,7 +3,7 @@ use crate::{
     schema::{current_table_items, table_items, table_metadatas},
 };
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     aptos_protos::transaction::v1::{DeleteTableItem, WriteTableItem},
     utils::{convert::standardize_address, extract::hash_str},
 };

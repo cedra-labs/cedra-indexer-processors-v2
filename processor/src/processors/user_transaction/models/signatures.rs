@@ -10,7 +10,7 @@ use crate::{
 };
 use allocative_derive::Allocative;
 use anyhow::Result;
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::Signature as SignaturePb;
+use cedra_indexer_processor_sdk::aptos_protos::transaction::v1::Signature as SignaturePb;
 use field_count::FieldCount;
 use parquet_derive::ParquetRecordWriter;
 use serde::{Deserialize, Serialize};
