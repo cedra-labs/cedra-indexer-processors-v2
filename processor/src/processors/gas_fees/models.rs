@@ -6,7 +6,7 @@ use crate::{
     schema::gas_fees,
 };
 use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp,
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp,
     aptos_protos::transaction::v1::{
         transaction::TxnData, Transaction, TransactionInfo, UserTransactionRequest,
     },

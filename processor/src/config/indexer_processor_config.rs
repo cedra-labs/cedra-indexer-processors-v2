@@ -32,7 +32,7 @@ use crate::{
 };
 use anyhow::Result;
 use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::TransactionStreamConfig, server_framework::RunnableConfig,
+    cedra_indexer_transaction_stream::TransactionStreamConfig, server_framework::RunnableConfig,
     traits::processor_trait::ProcessorTrait,
 };
 use serde::{Deserialize, Serialize};

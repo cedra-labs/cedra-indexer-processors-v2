@@ -9,7 +9,7 @@ use crate::{
 };
 use ahash::AHashMap;
 use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp,
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp,
     aptos_protos::transaction::v1::{write_set_change::Change, Transaction},
     utils::convert::standardize_address,
 };

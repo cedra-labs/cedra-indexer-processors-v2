@@ -360,7 +360,7 @@ mod tests {
         MIGRATIONS,
     };
     use aptos_indexer_processor_sdk::{
-        aptos_indexer_transaction_stream::{
+        cedra_indexer_transaction_stream::{
             utils::additional_headers::AdditionalHeaders, TransactionStreamConfig,
         },
         postgres::{

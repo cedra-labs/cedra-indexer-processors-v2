@@ -33,7 +33,7 @@ use crate::{
 };
 use ahash::{AHashMap, AHashSet};
 use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp,
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp,
     aptos_protos::transaction::v1::{transaction::TxnData, write_set_change::Change, Transaction},
     postgres::utils::database::DbContext,
     utils::{convert::standardize_address, extract::get_entry_function_from_user_request},

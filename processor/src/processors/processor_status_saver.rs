@@ -10,7 +10,7 @@ use crate::{
 };
 use anyhow::Result;
 use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp,
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp,
     common_steps::ProcessorStatusSaver,
     postgres::{
         models::processor_status::{ProcessorStatus, ProcessorStatusQuery},
@@ -345,7 +345,7 @@ mod tests {
     };
     use ahash::AHashMap;
     use aptos_indexer_processor_sdk::{
-        aptos_indexer_transaction_stream::{
+        cedra_indexer_transaction_stream::{
             utils::additional_headers::AdditionalHeaders, TransactionStreamConfig,
         },
         postgres::{

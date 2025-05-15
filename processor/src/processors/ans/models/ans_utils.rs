@@ -7,7 +7,7 @@
 use crate::processors::default::models::move_resources::MoveResource;
 use anyhow::Context;
 use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp_secs,
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp_secs,
     aptos_protos::transaction::v1::{Event, WriteResource},
     utils::convert::{
         bigdecimal_to_u64, deserialize_from_string, standardize_address, truncate_str,

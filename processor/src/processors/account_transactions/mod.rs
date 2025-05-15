@@ -8,7 +8,7 @@ pub mod account_transactions_storer;
 
 use crate::processors::account_transactions::account_transactions_model::AccountTransaction;
 use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp,
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp,
     aptos_protos::transaction::v1::Transaction,
 };
 use rayon::prelude::*;
