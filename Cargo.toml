@@ -25,10 +25,10 @@ anyhow = "1.0.98"
 # https://github.com/cedra-labs/cedra-indexer-processors/pull/325
 # Do NOT enable the testing_framework feature here, it is conditionally enabled as a dev dependency
 # in the integration-tests/Cargo.toml file.
-cedra-indexer-processor-sdk = { git = "https://github.com/cedra-labs/cedra-indexer-processor-sdk.git", rev="58a542e8a7440ba497edae0d240a673d6485c8c5", features = [
+cedra-indexer-processor-sdk = { git = "https://github.com/cedra-labs/cedra-indexer-processor-sdk.git", features = [
         "postgres_partial",
-] }
-aptos-indexer-test-transactions = { git = "https://github.com/cedra-labs/cedra.git" }
+] } #  rev="58a542e8a7440ba497edae0d240a673d6485c8c5",
+aptos-indexer-test-transactions = { git = "https://github.com/cedra-labs/cedra.git", branch = "build-own-cli" }
 async-trait = "0.1.53"
 backtrace = "0.3.58"
 base64 = "0.13.0"
