@@ -27,8 +27,8 @@ anyhow = "1.0.98"
 # in the integration-tests/Cargo.toml file.
 cedra-indexer-processor-sdk = { git = "https://github.com/cedra-labs/cedra-indexer-processor-sdk.git", features = [
         "postgres_partial",
-], branch = "main" } #  rev="58a542e8a7440ba497edae0d240a673d6485c8c5",
-aptos-indexer-test-transactions = { git = "https://github.com/cedra-labs/cedra.git", branch = "build-own-cli" }
+], rev="0bb792d10b385df7525d4e3eb2447bad2c7fc159" } #  rev="58a542e8a7440ba497edae0d240a673d6485c8c5",
+aptos-indexer-test-transactions = { git = "https://github.com/cedra-labs/cedra.git", rev="96bd9b3d300aaeab590c3662c8920c4d24708c3b" }
 async-trait = "0.1.53"
 backtrace = "0.3.58"
 base64 = "0.13.0"
