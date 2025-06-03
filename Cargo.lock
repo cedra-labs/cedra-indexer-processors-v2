@@ -4199,7 +4199,7 @@ checksum = "6ea1a2d0a644769cc99faa24c3ad26b379b786fe7c36fd3c546254801650e6dd"
 [[package]]
 name = "sample"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git"
+source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=9d31d5de9b4df7620a47b1485345fafecda2a990"
 dependencies = [
  "tracing",
 ]
