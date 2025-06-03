@@ -142,12 +142,12 @@ checksum = "e16d2d3311acee920a9eb8d33b8cbc1787ce4a264e85f964c2404b969bdcd487"
 [[package]]
 name = "aptos-indexer-test-transactions"
 version = "1.0.0"
-source = "git+https://github.com/cedra-labs/cedra.git#4f09b3b797e8549329eacaa793bff1c2c2d0ae1e"
+source = "git+https://github.com/cedra-labs/cedra.git#?rev=96bd9b3d300aaeab590c3662c8920c4d24708c3b"
 
 [[package]]
 name = "aptos-profiler"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra.git"
+source = "git+https://github.com/cedra-labs/cedra.git?rev=96bd9b3d300aaeab590c3662c8920c4d24708c3b"
 dependencies = [
  "anyhow",
  "backtrace",
@@ -160,7 +160,7 @@ dependencies = [
 [[package]]
 name = "aptos-protos"
 version = "1.3.1"
-source = "git+https://github.com/cedra-labs/cedra.git"
+source = "git+https://github.com/cedra-labs/cedra.git?rev=96bd9b3d300aaeab590c3662c8920c4d24708c3b"
 dependencies = [
  "pbjson",
  "prost 0.13.4",
@@ -171,7 +171,7 @@ dependencies = [
 [[package]]
 name = "aptos-system-utils"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra.git"
+source = "git+https://github.com/cedra-labs/cedra.git?rev=96bd9b3d300aaeab590c3662c8920c4d24708c3b"
 dependencies = [
  "anyhow",
  "aptos-profiler",
@@ -191,7 +191,7 @@ dependencies = [
 [[package]]
 name = "aptos-transaction-filter"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra.git"
+source = "git+https://github.com/cedra-labs/cedra.git?rev=96bd9b3d300aaeab590c3662c8920c4d24708c3b"
 dependencies = [
  "anyhow",
  "aptos-protos",
@@ -634,7 +634,7 @@ dependencies = [
 [[package]]
 name = "cedra-indexer-processor-sdk"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git"
+source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=ce81d568639e1e406e272b78a1f88dc959b786ed"
 dependencies = [
  "ahash",
  "anyhow",
@@ -690,7 +690,7 @@ dependencies = [
 [[package]]
 name = "cedra-indexer-transaction-stream"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git"
+source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=ce81d568639e1e406e272b78a1f88dc959b786ed"
 dependencies = [
  "anyhow",
  "aptos-protos",
@@ -712,7 +712,7 @@ dependencies = [
 [[package]]
 name = "cedra-moving-average"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git"
+source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=ce81d568639e1e406e272b78a1f88dc959b786ed"
 dependencies = [
  "chrono",
 ]
@@ -2333,7 +2333,7 @@ dependencies = [
 [[package]]
 name = "instrumented-channel"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git"
+source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=ce81d568639e1e406e272b78a1f88dc959b786ed"
 dependencies = [
  "delegate",
  "derive_builder",
