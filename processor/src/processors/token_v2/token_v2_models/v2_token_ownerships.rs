@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -26,7 +26,7 @@ use ahash::AHashMap;
 use allocative_derive::Allocative;
 use anyhow::Context;
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{
+    cedra_protos::transaction::v1::{
         DeleteResource, DeleteTableItem, WriteResource, WriteTableItem,
     },
     postgres::utils::database::{DbContext, DbPoolConnection},

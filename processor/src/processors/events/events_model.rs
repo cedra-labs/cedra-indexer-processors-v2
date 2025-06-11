@@ -8,7 +8,7 @@ use crate::{
 use allocative_derive::Allocative;
 use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::transaction::v1::{
+    cedra_protos::transaction::v1::{
         transaction::TxnData, Event as EventPB, EventSizeInfo, Transaction,
     },
     utils::convert::{standardize_address, truncate_str},

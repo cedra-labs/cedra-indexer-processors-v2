@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -34,7 +34,7 @@ use crate::{
 use ahash::{AHashMap, AHashSet};
 use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::transaction::v1::{transaction::TxnData, write_set_change::Change, Transaction},
+    cedra_protos::transaction::v1::{transaction::TxnData, write_set_change::Change, Transaction},
     postgres::utils::database::DbContext,
     utils::{convert::standardize_address, extract::get_entry_function_from_user_request},
 };
@@ -159,8 +159,8 @@ pub async fn parse_v2_token(
                                 V2TokenResource::UnlimitedSupply(unlimited_supply) => {
                                     aggregated_data.unlimited_supply = Some(unlimited_supply);
                                 },
-                                V2TokenResource::AptosCollection(aptos_collection) => {
-                                    aggregated_data.aptos_collection = Some(aptos_collection);
+                                V2TokenResource::CedraCollection(cedra_collection) => {
+                                    aggregated_data.cedra_collection = Some(cedra_collection);
                                 },
                                 V2TokenResource::PropertyMapModel(property_map) => {
                                     aggregated_data.property_map = Some(property_map);

@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -9,7 +9,7 @@ use crate::processors::token_v2::{
 };
 use anyhow::{Context, Result};
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::WriteResource,
+    cedra_protos::transaction::v1::WriteResource,
     utils::{
         convert::{deserialize_from_string, truncate_str},
         extract::Aggregator,

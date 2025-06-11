@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 #![allow(clippy::extra_unused_lifetimes)]
@@ -10,7 +10,7 @@ use crate::{
 };
 use allocative_derive::Allocative;
 use anyhow::Result;
-use cedra_indexer_processor_sdk::aptos_protos::transaction::v1::Signature as SignaturePb;
+use cedra_indexer_processor_sdk::cedra_protos::transaction::v1::Signature as SignaturePb;
 use field_count::FieldCount;
 use parquet_derive::ParquetRecordWriter;
 use serde::{Deserialize, Serialize};

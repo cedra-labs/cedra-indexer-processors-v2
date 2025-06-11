@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -22,7 +22,7 @@ use crate::{
 use allocative_derive::Allocative;
 use anyhow::Context;
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{DeleteResource, WriteResource, WriteTableItem},
+    cedra_protos::transaction::v1::{DeleteResource, WriteResource, WriteTableItem},
     utils::convert::standardize_address,
 };
 use bigdecimal::BigDecimal;

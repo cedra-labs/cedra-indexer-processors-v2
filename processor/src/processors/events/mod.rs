@@ -11,7 +11,7 @@ use crate::{
 };
 use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::transaction::v1::{transaction::TxnData, Transaction},
+    cedra_protos::transaction::v1::{transaction::TxnData, Transaction},
 };
 use tracing::warn;
 

@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 
 // This is required because a diesel macro makes clippy sad
 #![allow(clippy::extra_unused_lifetimes)]
@@ -12,7 +12,7 @@ use crate::{
 use allocative_derive::Allocative;
 use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::transaction::v1::{transaction::TxnData, Transaction},
+    cedra_protos::transaction::v1::{transaction::TxnData, Transaction},
     utils::convert::{standardize_address, u64_to_bigdecimal},
 };
 use bigdecimal::BigDecimal;

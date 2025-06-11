@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW current_aptos_names AS
+CREATE OR REPLACE VIEW current_cedra_names AS
 SELECT
 	current_ans_lookup.domain,
 	current_ans_lookup.subdomain,

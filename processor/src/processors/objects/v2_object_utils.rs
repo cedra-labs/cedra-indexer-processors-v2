@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -13,14 +13,14 @@ use crate::{
             FungibleAssetStore, FungibleAssetSupply,
         },
         token_v2::token_v2_models::v2_token_utils::{
-            AptosCollection, ConcurrentSupply, FixedSupply, PropertyMapModel, TokenIdentifiers,
+            CedraCollection, ConcurrentSupply, FixedSupply, PropertyMapModel, TokenIdentifiers,
             TokenV2, TransferEvent, UnlimitedSupply,
         },
     },
 };
 use ahash::AHashMap;
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::WriteResource,
+    cedra_protos::transaction::v1::WriteResource,
     utils::convert::{deserialize_from_string, standardize_address},
 };
 use bigdecimal::BigDecimal;
@@ -49,7 +49,7 @@ pub struct ObjectAggregatedData {
     pub fungible_asset_store: Option<FungibleAssetStore>,
     pub concurrent_fungible_asset_balance: Option<ConcurrentFungibleAssetBalance>,
     // Token v2 structs
-    pub aptos_collection: Option<AptosCollection>,
+    pub cedra_collection: Option<CedraCollection>,
     pub fixed_supply: Option<FixedSupply>,
     pub property_map: Option<PropertyMapModel>,
     pub token: Option<TokenV2>,
@@ -76,7 +76,7 @@ impl Default for ObjectAggregatedData {
             concurrent_fungible_asset_supply: None,
             concurrent_fungible_asset_balance: None,
             fungible_asset_store: None,
-            aptos_collection: None,
+            cedra_collection: None,
             fixed_supply: None,
             property_map: None,
             token: None,

@@ -16,7 +16,7 @@ use crate::processors::fungible_asset::{
 use ahash::AHashMap;
 use anyhow::Result;
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::Transaction,
+    cedra_protos::transaction::v1::Transaction,
     postgres::utils::database::ArcDbPool,
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},
     types::transaction_context::TransactionContext,

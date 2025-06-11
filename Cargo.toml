@@ -5,10 +5,10 @@ resolver = "2"
 members = ["integration-tests", "processor"]
 
 [workspace.package]
-authors = ["Aptos Labs <opensource@aptoslabs.com>"]
+authors = ["Cedra Labs <opensource@cedralabs.com>"]
 version = "0.1.0"
 edition = "2021"
-homepage = "https://aptoslabs.com"
+homepage = "https://cedralabs.com"
 license = "Apache-2.0"
 publish = false
 repository = "https://github.com/cedra-labs/cedra-indexer-processors-v2"
@@ -27,8 +27,8 @@ anyhow = "1.0.98"
 # in the integration-tests/Cargo.toml file.
 cedra-indexer-processor-sdk = { git = "https://github.com/cedra-labs/cedra-indexer-processor-sdk.git", features = [
         "postgres_partial",
-], rev="bc50a1311823234530007168984269acf91cffd8" } #  rev="58a542e8a7440ba497edae0d240a673d6485c8c5",
-aptos-indexer-test-transactions = { git = "https://github.com/cedra-labs/cedra.git", rev="f6e266175c32dc53c7a6d79aeef5582cc7a4df12" }
+], rev="ec87f8aab59e83eb39d326161a84bed9dd1a6c39" } 
+cedra-indexer-test-transactions = { git = "https://github.com/cedra-labs/cedra-network.git", rev="e8b7b18c6b07f5338af169246ada024a8a5ca4f6" }
 async-trait = "0.1.53"
 backtrace = "0.3.58"
 base64 = "0.13.0"

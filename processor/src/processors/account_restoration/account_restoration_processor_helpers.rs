@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use super::account_restoration_models::public_key_auth_keys::{
@@ -13,7 +13,7 @@ use crate::{
 };
 use ahash::AHashMap;
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{
+    cedra_protos::transaction::v1::{
         transaction::TxnData, write_set_change::Change, Transaction, WriteResource,
     },
     utils::{convert::standardize_address, extract::get_entry_function_from_user_request},

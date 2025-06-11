@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::processors::{
@@ -6,7 +6,7 @@ use crate::processors::{
 };
 use anyhow::{Context, Result};
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::WriteResource,
+    cedra_protos::transaction::v1::WriteResource,
     utils::convert::{deserialize_from_string, standardize_address},
 };
 use bigdecimal::BigDecimal;
@@ -213,7 +213,7 @@ pub enum StakeEvent {
 impl StakeEvent {
     pub fn from_event(data_type: &str, data: &str, txn_version: i64) -> Result<Option<Self>> {
         match data_type {
-            "0x1::aptos_governance::VoteEvent" | "0x1::aptos_governance::Vote" => {
+            "0x1::cedra_governance::VoteEvent" | "0x1::cedra_governance::Vote" => {
                 serde_json::from_str(data).map(|inner| Some(StakeEvent::GovernanceVoteEvent(inner)))
             },
             "0x1::stake::DistributeRewardsEvent" | "0x1::stake::DistributeRewards" => {

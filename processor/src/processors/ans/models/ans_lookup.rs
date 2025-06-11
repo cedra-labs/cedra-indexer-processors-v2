@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -8,7 +8,7 @@
 use super::ans_utils::AnsTableItem;
 use crate::schema::{ans_lookup, ans_primary_name, current_ans_lookup, current_ans_primary_name};
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{DeleteTableItem, WriteTableItem},
+    cedra_protos::transaction::v1::{DeleteTableItem, WriteTableItem},
     utils::{convert::standardize_address, extract::get_name_from_unnested_move_type},
 };
 use diesel::prelude::*;

@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use super::account_signature_utils::{
@@ -6,7 +6,7 @@ use super::account_signature_utils::{
 };
 use crate::processors::user_transaction::models::signatures::Signature;
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{
+    cedra_protos::transaction::v1::{
         account_signature::Type as AccountSignatureTypeEnum,
         signature::{Signature as SignatureEnum, Type as SignatureTypeEnum},
         Ed25519Signature, FeePayerSignature, MultiAgentSignature, MultiEd25519Signature,

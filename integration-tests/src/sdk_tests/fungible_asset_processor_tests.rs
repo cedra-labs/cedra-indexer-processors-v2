@@ -57,7 +57,7 @@ mod sdk_fungible_asset_processor_tests {
         database::{PostgresTestDatabase, TestDatabase},
         sdk_test_context::SdkTestContext,
     };
-    use aptos_indexer_test_transactions::json_transactions::generated_transactions::{
+    use cedra_indexer_test_transactions::json_transactions::generated_transactions::{
         IMPORTED_MAINNET_TXNS_1680592683_FA_MIGRATION_COIN_INFO,
         IMPORTED_MAINNET_TXNS_1737056775_COIN_TRANSFER_BURN_EVENT,
         IMPORTED_MAINNET_TXNS_1957950162_FA_MIGRATION_V2_STORE_ONLY,
@@ -119,7 +119,7 @@ mod sdk_fungible_asset_processor_tests {
      * - Events
      *      - 0x1::coin::WithdrawEvent
      *      - 0x1::coin::DepositEvents
-     *      - 0x1::aptos_coin::GasFeeEvent
+     *      - 0x1::cedra_coin::GasFeeEvent
      *      - 0x1::fungible_asset::Deposit
      *      - 0x1::fungible_asset::Withdraw
      */

@@ -1,8 +1,8 @@
 #!/bin/bash
-# Copyright (c) Aptos
+# Copyright (c) Cedra
 # SPDX-License-Identifier: Apache-2.0
 
-# This script is to build and push aptos indexer processors v2 images.
+# This script is to build and push cedra indexer processors v2 images.
 # You need to execute this from the repository root as working directory
 # E.g. scripts/build-and-push-images.sh
 # E.g. scripts/build-and-push-images.sh python
@@ -10,7 +10,7 @@
 
 set -ex
 
-TARGET_REGISTRY="us-docker.pkg.dev/aptos-registry/docker/indexer-client-examples/rust"
+TARGET_REGISTRY="us-docker.pkg.dev/cedra-registry/docker/indexer-client-examples/rust"
 # take GIT_SHA from environment variable if set, otherwise use git rev-parse HEAD
 GIT_SHA="${GIT_SHA:-$(git rev-parse HEAD)}"
 EXAMPLE_TO_BUILD_ARG="${1:-all}"

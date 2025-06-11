@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -11,7 +11,7 @@ use super::{
 };
 use crate::schema::{collection_datas, current_collection_datas};
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::WriteTableItem, postgres::utils::database::DbPoolConnection,
+    cedra_protos::transaction::v1::WriteTableItem, postgres::utils::database::DbPoolConnection,
     utils::convert::standardize_address,
 };
 use bigdecimal::BigDecimal;

@@ -28,7 +28,7 @@ currentcommit=$(git rev-parse HEAD)
 messages=$(git log --pretty=format:"%h %s" $previouscommit..$currentcommit)
 
 function geturl() {
-  echo "https://github.com/aptos-labs/aptos-indexer-processors/commit/$1"
+  echo "https://github.com/cedra-labs/cedra-indexer-processors/commit/$1"
 }
 
 cat <<EOF

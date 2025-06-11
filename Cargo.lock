@@ -140,73 +140,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e16d2d3311acee920a9eb8d33b8cbc1787ce4a264e85f964c2404b969bdcd487"
 
 [[package]]
-name = "aptos-indexer-test-transactions"
-version = "1.0.0"
-source = "git+https://github.com/cedra-labs/cedra.git?rev=f6e266175c32dc53c7a6d79aeef5582cc7a4df12#f6e266175c32dc53c7a6d79aeef5582cc7a4df12"
-
-[[package]]
-name = "aptos-profiler"
-version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra.git?rev=f6e266175c32dc53c7a6d79aeef5582cc7a4df12#f6e266175c32dc53c7a6d79aeef5582cc7a4df12"
-dependencies = [
- "anyhow",
- "backtrace",
- "jemalloc-sys",
- "jemallocator",
- "pprof",
- "regex",
-]
-
-[[package]]
-name = "aptos-protos"
-version = "1.3.1"
-source = "git+https://github.com/cedra-labs/cedra.git?rev=f6e266175c32dc53c7a6d79aeef5582cc7a4df12#f6e266175c32dc53c7a6d79aeef5582cc7a4df12"
-dependencies = [
- "pbjson",
- "prost 0.13.5",
- "serde",
- "tonic 0.12.3",
-]
-
-[[package]]
-name = "aptos-system-utils"
-version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra.git?rev=f6e266175c32dc53c7a6d79aeef5582cc7a4df12#f6e266175c32dc53c7a6d79aeef5582cc7a4df12"
-dependencies = [
- "anyhow",
- "aptos-profiler",
- "async-mutex",
- "http 0.2.12",
- "hyper 0.14.32",
- "lazy_static",
- "mime",
- "pprof",
- "regex",
- "rstack-self",
- "tokio",
- "tracing",
- "url",
-]
-
-[[package]]
-name = "aptos-transaction-filter"
-version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra.git?rev=f6e266175c32dc53c7a6d79aeef5582cc7a4df12#f6e266175c32dc53c7a6d79aeef5582cc7a4df12"
-dependencies = [
- "anyhow",
- "aptos-protos",
- "derivative",
- "derive_builder",
- "memchr",
- "once_cell",
- "prost 0.13.5",
- "serde",
- "serde_json",
- "serde_yaml",
- "thiserror 1.0.69",
-]
-
-[[package]]
 name = "arrayvec"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -634,12 +567,10 @@ dependencies = [
 [[package]]
 name = "cedra-indexer-processor-sdk"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=bc50a1311823234530007168984269acf91cffd8#bc50a1311823234530007168984269acf91cffd8"
+source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=ec87f8aab59e83eb39d326161a84bed9dd1a6c39#ec87f8aab59e83eb39d326161a84bed9dd1a6c39"
 dependencies = [
  "ahash",
  "anyhow",
- "aptos-protos",
- "aptos-system-utils",
  "async-trait",
  "autometrics",
  "axum 0.7.9",
@@ -647,6 +578,8 @@ dependencies = [
  "bcs",
  "bigdecimal",
  "cedra-indexer-transaction-stream",
+ "cedra-protos",
+ "cedra-system-utils",
  "chrono",
  "clap",
  "derive_builder",
@@ -688,14 +621,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "cedra-indexer-test-transactions"
+version = "1.0.0"
+source = "git+https://github.com/cedra-labs/cedra-network.git?rev=e8b7b18c6b07f5338af169246ada024a8a5ca4f6#e8b7b18c6b07f5338af169246ada024a8a5ca4f6"
+
+[[package]]
 name = "cedra-indexer-transaction-stream"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=bc50a1311823234530007168984269acf91cffd8#bc50a1311823234530007168984269acf91cffd8"
+source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=ec87f8aab59e83eb39d326161a84bed9dd1a6c39#ec87f8aab59e83eb39d326161a84bed9dd1a6c39"
 dependencies = [
  "anyhow",
- "aptos-protos",
- "aptos-transaction-filter",
  "cedra-moving-average",
+ "cedra-protos",
+ "cedra-transaction-filter",
  "chrono",
  "futures-util",
  "once_cell",
@@ -712,9 +650,71 @@ dependencies = [
 [[package]]
 name = "cedra-moving-average"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=bc50a1311823234530007168984269acf91cffd8#bc50a1311823234530007168984269acf91cffd8"
+source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=ec87f8aab59e83eb39d326161a84bed9dd1a6c39#ec87f8aab59e83eb39d326161a84bed9dd1a6c39"
 dependencies = [
  "chrono",
+]
+
+[[package]]
+name = "cedra-profiler"
+version = "0.1.0"
+source = "git+https://github.com/cedra-labs/cedra-network.git?rev=e8b7b18c6b07f5338af169246ada024a8a5ca4f6#e8b7b18c6b07f5338af169246ada024a8a5ca4f6"
+dependencies = [
+ "anyhow",
+ "backtrace",
+ "jemalloc-sys",
+ "jemallocator",
+ "pprof",
+ "regex",
+]
+
+[[package]]
+name = "cedra-protos"
+version = "1.3.1"
+source = "git+https://github.com/cedra-labs/cedra-network.git?rev=e8b7b18c6b07f5338af169246ada024a8a5ca4f6#e8b7b18c6b07f5338af169246ada024a8a5ca4f6"
+dependencies = [
+ "pbjson",
+ "prost 0.13.5",
+ "serde",
+ "tonic 0.12.3",
+]
+
+[[package]]
+name = "cedra-system-utils"
+version = "0.1.0"
+source = "git+https://github.com/cedra-labs/cedra-network.git?rev=e8b7b18c6b07f5338af169246ada024a8a5ca4f6#e8b7b18c6b07f5338af169246ada024a8a5ca4f6"
+dependencies = [
+ "anyhow",
+ "async-mutex",
+ "cedra-profiler",
+ "http 0.2.12",
+ "hyper 0.14.32",
+ "lazy_static",
+ "mime",
+ "pprof",
+ "regex",
+ "rstack-self",
+ "tokio",
+ "tracing",
+ "url",
+]
+
+[[package]]
+name = "cedra-transaction-filter"
+version = "0.1.0"
+source = "git+https://github.com/cedra-labs/cedra-network.git?rev=e8b7b18c6b07f5338af169246ada024a8a5ca4f6#e8b7b18c6b07f5338af169246ada024a8a5ca4f6"
+dependencies = [
+ "anyhow",
+ "cedra-protos",
+ "derivative",
+ "derive_builder",
+ "memchr",
+ "once_cell",
+ "prost 0.13.5",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -2289,7 +2289,7 @@ dependencies = [
 [[package]]
 name = "instrumented-channel"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=bc50a1311823234530007168984269acf91cffd8#bc50a1311823234530007168984269acf91cffd8"
+source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=ec87f8aab59e83eb39d326161a84bed9dd1a6c39#ec87f8aab59e83eb39d326161a84bed9dd1a6c39"
 dependencies = [
  "delegate",
  "derive_builder",
@@ -2311,10 +2311,10 @@ version = "1.0.0"
 dependencies = [
  "ahash",
  "anyhow",
- "aptos-indexer-test-transactions",
  "assert-json-diff",
  "bigdecimal",
  "cedra-indexer-processor-sdk",
+ "cedra-indexer-test-transactions",
  "chrono",
  "diesel",
  "field_count",
@@ -4198,7 +4198,7 @@ checksum = "28d3b2b1366ec20994f1fd18c3c594f05c5dd4bc44d8bb0c1c632c8d6829481f"
 [[package]]
 name = "sample"
 version = "0.1.0"
-source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=bc50a1311823234530007168984269acf91cffd8#bc50a1311823234530007168984269acf91cffd8"
+source = "git+https://github.com/cedra-labs/cedra-indexer-processor-sdk.git?rev=ec87f8aab59e83eb39d326161a84bed9dd1a6c39#ec87f8aab59e83eb39d326161a84bed9dd1a6c39"
 dependencies = [
  "tracing",
 ]

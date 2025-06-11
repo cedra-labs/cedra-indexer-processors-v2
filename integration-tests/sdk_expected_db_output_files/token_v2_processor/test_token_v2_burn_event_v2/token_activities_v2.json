@@ -11,7 +11,7 @@
     "token_amount": "1",
     "before_value": null,
     "after_value": null,
-    "entry_function_id_str": "0x4::aptos_token::burn",
+    "entry_function_id_str": "0x4::cedra_token::burn",
     "token_standard": "v2",
     "is_fungible_v2": null,
     "transaction_timestamp": "2024-04-30T23:50:44.443590"

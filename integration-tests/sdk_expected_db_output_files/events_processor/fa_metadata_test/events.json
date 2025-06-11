@@ -51,7 +51,7 @@
         "inner": "0x8f4f0991e18bd9620a4b3756dbe15afd20135eaaa93e0d0b82e6e2412a8e12b8"
       },
       "user": "0xf21d4c76354db6492841e31fefeaa5a3e8a1071d2bcbbdd1cf1cbc6fa3954b88",
-      "token": "0x1::aptos_coin::AptosCoin",
+      "token": "0x1::cedra_coin::CedraCoin",
       "amount": "300000"
     },
     "indexed_type": "0xfabb471223cefd7064b1f19f6e0e06468d2bd830d8ae832916406dd8297098af::lending_pool::Deposit",

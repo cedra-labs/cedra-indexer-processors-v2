@@ -65,7 +65,7 @@ mod sdk_objects_processor_tests {
     use cedra_indexer_processor_sdk::testing_framework::{
         cli_parser::get_test_config, database::TestDatabase,
     };
-    use aptos_indexer_test_transactions::json_transactions::generated_transactions::{
+    use cedra_indexer_test_transactions::json_transactions::generated_transactions::{
         IMPORTED_MAINNET_TXNS_1806220919_OBJECT_UNTRANSFERABLE,
         IMPORTED_MAINNET_TXNS_578318306_OBJECTS_WRITE_RESOURCE,
         IMPORTED_MAINNET_TXNS_578366445_TOKEN_V2_BURN_EVENT_V2,

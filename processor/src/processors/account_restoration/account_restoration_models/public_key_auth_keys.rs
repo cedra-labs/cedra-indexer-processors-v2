@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use super::account_restoration_utils::KeyRotationToPublicKeyEvent;
@@ -13,7 +13,7 @@ use crate::{
     schema::public_key_auth_keys,
 };
 use ahash::AHashMap;
-use cedra_indexer_processor_sdk::aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::cedra_protos::transaction::v1::{
     account_signature::{Signature as AccountSignature, Type as AccountSignatureTypeEnum},
     any_public_key::Type as AnyPublicKeyEnum,
     signature::Signature as SignatureEnum,
@@ -281,7 +281,7 @@ impl PartialOrd for PublicKeyAuthKey {
 }
 
 // Below are just types and convenience functions for the multi key deserialization.
-// Ideally we would use aptos-crypto or aptos-types to deserialize these types, but
+// Ideally we would use cedra-crypto or cedra-types to deserialize these types, but
 // there is a blocking incompatible dependency.
 fn any_public_key_to_serialized_string(key: &AnyPublicKey) -> String {
     // The type is 1-indexed in the proto, but 0-indexed in the code so we subtract 1

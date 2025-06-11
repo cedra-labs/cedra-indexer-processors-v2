@@ -22,7 +22,7 @@
     "storage_id": "0x27af54b1bb7cb1f4ef3e1ac6577616f62d94fb670fd33d385c439bc3967c49b3",
     "owner_address": "0xaf1fbd1c118239498c0fec0e5cec54a50d03250fe1aca589a6b903566ba1d4db",
     "asset_type_v2": null,
-    "asset_type_v1": "0x1::aptos_coin::AptosCoin",
+    "asset_type_v1": "0x1::cedra_coin::CedraCoin",
     "is_primary": true,
     "is_frozen": false,
     "amount_v1": "114994000",
@@ -35,7 +35,7 @@
     "last_transaction_timestamp_v2": null,
     "last_transaction_timestamp": "2024-06-25T23:55:53",
     "token_standard": "v1",
-    "asset_type": "0x1::aptos_coin::AptosCoin"
+    "asset_type": "0x1::cedra_coin::CedraCoin"
   },
   {
     "storage_id": "0x89cee32338902b6f79f9c75c317d32ac061771817c0d5b0802f97ec44ebfc7d4",
@@ -60,7 +60,7 @@
     "storage_id": "0x8ca15f49a4147c76f4121550f3cf9de391e4e14d2ec8485dcdbda99387b9689e",
     "owner_address": "0x3b38735644d0be8ac37ebd84a1e42fa5c2487495ef8782f6c694b1a147f82426",
     "asset_type_v2": null,
-    "asset_type_v1": "0x1::aptos_coin::AptosCoin",
+    "asset_type_v1": "0x1::cedra_coin::CedraCoin",
     "is_primary": true,
     "is_frozen": false,
     "amount_v1": "111198107496469",
@@ -73,7 +73,7 @@
     "last_transaction_timestamp_v2": null,
     "last_transaction_timestamp": "2024-06-25T23:55:53",
     "token_standard": "v1",
-    "asset_type": "0x1::aptos_coin::AptosCoin"
+    "asset_type": "0x1::cedra_coin::CedraCoin"
   },
   {
     "storage_id": "0x9120a6a57b1463607f27c140b3a8c5542c74a2411d632eb6f25bab0b40a987a4",

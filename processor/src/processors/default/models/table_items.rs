@@ -4,7 +4,7 @@ use crate::{
 };
 use allocative_derive::Allocative;
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{DeleteTableItem, WriteTableItem},
+    cedra_protos::transaction::v1::{DeleteTableItem, WriteTableItem},
     utils::{convert::standardize_address, extract::hash_str},
 };
 use field_count::FieldCount;

@@ -1,6 +1,6 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 
-// Copyright (c) Aptos
+// Copyright (c) Cedra
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -20,7 +20,7 @@ use allocative::Allocative;
 use anyhow::Result;
 use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::{
+    cedra_protos::{
         transaction::v1::{
             TransactionInfo, UserTransaction as UserTransactionPB, UserTransactionRequest,
         },

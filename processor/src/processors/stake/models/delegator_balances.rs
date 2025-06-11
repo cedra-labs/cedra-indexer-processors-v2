@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 
 // This is required because a diesel macro makes clippy sad
 #![allow(clippy::extra_unused_lifetimes)]
@@ -17,7 +17,7 @@ use allocative::Allocative;
 use anyhow::Context;
 use cedra_indexer_processor_sdk::{
     cedra_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::transaction::v1::{
+    cedra_protos::transaction::v1::{
         write_set_change::Change, DeleteTableItem, Transaction, WriteResource, WriteTableItem,
     },
     postgres::utils::database::DbPoolConnection,

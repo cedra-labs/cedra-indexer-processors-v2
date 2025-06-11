@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -26,12 +26,12 @@ use crate::{
 };
 use ahash::AHashMap;
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{
+    cedra_protos::transaction::v1::{
         transaction::TxnData, write_set_change::Change as WriteSetChangeEnum, Event as EventPB,
         Transaction as TransactionPB, TransactionInfo, UserTransactionRequest,
     },
     utils::{
-        constants::APTOS_COIN_TYPE_STR,
+        constants::CEDRA_COIN_TYPE_STR,
         convert::{standardize_address, u64_to_bigdecimal},
         extract::get_entry_function_from_user_request,
     },
@@ -298,7 +298,7 @@ impl CoinActivity {
         block_height: i64,
         fee_statement: Option<FeeStatement>,
     ) -> Self {
-        let aptos_coin_burned =
+        let cedra_coin_burned =
             BigDecimal::from(txn_info.gas_used * user_transaction_request.gas_unit_price);
         let gas_fee_payer_address = match user_transaction_request.signature.as_ref() {
             Some(signature) => get_fee_payer_address(signature, transaction_version),
@@ -313,8 +313,8 @@ impl CoinActivity {
             event_creation_number: BURN_GAS_EVENT_CREATION_NUM,
             event_sequence_number: user_transaction_request.sequence_number as i64,
             owner_address: standardize_address(&user_transaction_request.sender.to_string()),
-            coin_type: APTOS_COIN_TYPE_STR.to_string(),
-            amount: aptos_coin_burned,
+            coin_type: CEDRA_COIN_TYPE_STR.to_string(),
+            amount: cedra_coin_burned,
             activity_type: GAS_FEE_EVENT.to_string(),
             is_gas_fee: true,
             is_transaction_success: txn_info.success,

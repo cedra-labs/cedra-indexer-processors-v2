@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -24,7 +24,7 @@ use crate::{
 use allocative_derive::Allocative;
 use anyhow::Context;
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{WriteResource, WriteTableItem},
+    cedra_protos::transaction::v1::{WriteResource, WriteTableItem},
     postgres::utils::database::{DbContext, DbPoolConnection},
     utils::convert::standardize_address,
 };
@@ -136,8 +136,8 @@ impl CollectionV2 {
                     );
                 }
 
-                // Getting collection mutability config from AptosCollection
-                let collection = object_data.aptos_collection.as_ref();
+                // Getting collection mutability config from CedraCollection
+                let collection = object_data.cedra_collection.as_ref();
                 if let Some(collection) = collection {
                     mutable_description = Some(collection.mutable_description);
                     mutable_uri = Some(collection.mutable_uri);

@@ -3,7 +3,7 @@ use crate::processors::objects::{
     v2_objects_models::{PostgresCurrentObject, PostgresObject},
 };
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::Transaction,
+    cedra_protos::transaction::v1::Transaction,
     postgres::utils::database::{ArcDbPool, DbContext},
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},
     types::transaction_context::TransactionContext,

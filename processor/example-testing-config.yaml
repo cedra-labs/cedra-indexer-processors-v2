@@ -5,7 +5,7 @@ server_config:
     type: fungible_asset_processor
     channel_size: 100
   transaction_stream_config:
-    indexer_grpc_data_service_address: "https://grpc.mainnet.aptoslabs.com:443"
+    indexer_grpc_data_service_address: "https://grpc.mainnet.cedralabs.com:443"
     auth_token: {AUTH_TOKEN}
     request_name_header: "fungible_asset_processor"
   processor_mode:

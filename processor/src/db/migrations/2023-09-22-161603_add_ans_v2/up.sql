@@ -76,8 +76,8 @@ CREATE INDEX IF NOT EXISTS apn_v2_name_index on ans_primary_name_v2 (domain, sub
 CREATE INDEX IF NOT EXISTS apn_v2_ra_index on ans_primary_name_v2 (registered_address);
 CREATE INDEX IF NOT EXISTS apn_v2_insat_index on ans_primary_name_v2 (inserted_at);
 
-DROP VIEW IF EXISTS current_aptos_names;
-CREATE OR REPLACE VIEW current_aptos_names AS 
+DROP VIEW IF EXISTS current_cedra_names;
+CREATE OR REPLACE VIEW current_cedra_names AS 
 SELECT 
     cal.domain,
 	cal.subdomain,

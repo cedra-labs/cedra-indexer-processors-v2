@@ -9,7 +9,7 @@ use crate::{
     utils::table_flags::TableFlags,
 };
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::Transaction,
+    cedra_protos::transaction::v1::Transaction,
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},
     types::transaction_context::TransactionContext,
     utils::errors::ProcessorError,

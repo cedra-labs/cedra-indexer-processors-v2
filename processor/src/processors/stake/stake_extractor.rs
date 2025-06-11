@@ -12,7 +12,7 @@ use crate::processors::stake::{
     parse_stake_data,
 };
 use cedra_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::Transaction,
+    cedra_protos::transaction::v1::Transaction,
     postgres::utils::database::ArcDbPool,
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},
     types::transaction_context::TransactionContext,

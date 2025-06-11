@@ -1,6 +1,6 @@
 {
     "name": "scripts",
-    "description": "Scripts for aptos-indexer-processors",
+    "description": "Scripts for cedra-indexer-processors",
     "version": "1.0.0",
     "packageManager": "pnpm@9.0.2",
     "main": "index.js",
