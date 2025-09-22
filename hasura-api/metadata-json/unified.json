@@ -1,5 +1,5 @@
 {
-  "resource_version": 10000,
+  "resource_version": 10001,
   "metadata": {
     "version": 3,
     "sources": [
@@ -1076,6 +1076,29 @@
                   "limit": 100,
                   "allow_aggregations": true
                 }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "auth_key_account_addresses",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "last_transaction_version",
+                    "is_auth_key_used",
+                    "account_address",
+                    "auth_key"
+                  ],
+                  "filter": {},
+                  "limit": 100,
+                  "allow_aggregations": true
+                },
+                "comment": ""
               }
             ]
           },
@@ -2171,6 +2194,32 @@
                   "limit": 100,
                   "allow_aggregations": true
                 }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "public_key_auth_keys",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "last_transaction_version",
+                    "is_public_key_used",
+                    "account_public_key",
+                    "auth_key",
+                    "public_key",
+                    "public_key_type",
+                    "signature_type"
+                  ],
+                  "filter": {},
+                  "limit": 100,
+                  "allow_aggregations": true
+                },
+                "comment": ""
               }
             ]
           },
