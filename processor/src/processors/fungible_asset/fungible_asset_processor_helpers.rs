@@ -207,6 +207,7 @@ pub async fn parse_v2_coin(
                 }
             }
 
+
             // Loop 3: Get the metadata relevant to parse v1 coin and v2 fungible asset from write set changes
             // As an optimization, we also handle v1 balances in the process
             for (index, wsc) in transaction_info.changes.iter().enumerate() {
@@ -396,6 +397,7 @@ pub async fn parse_v2_coin(
                             txn_version,
                             txn_timestamp,
                             &fungible_asset_object_helper,
+                            &store_address_to_deleted_fa_store_events,
                         )
                         .unwrap_or_else(|e| {
                             tracing::error!(
