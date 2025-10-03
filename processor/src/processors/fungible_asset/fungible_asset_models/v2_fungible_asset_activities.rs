@@ -124,7 +124,7 @@ impl FungibleAssetActivity {
             match maybe_object_metadata {
                 Some(metadata) => {
                     // Get the store's owner address from ObjectCore.
-                    maybe_owner_address = Some(metadata.object.object_core.get_owner_address());
+                    maybe_owner_address = metadata.get_owner_address();
                     // Get the store's asset type
                     maybe_asset_type = metadata
                         .fungible_asset_store
