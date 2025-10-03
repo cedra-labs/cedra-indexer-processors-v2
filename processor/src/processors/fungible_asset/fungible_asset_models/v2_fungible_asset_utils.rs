@@ -63,10 +63,10 @@ impl FeeStatement {
                 );
                 panic!();
             });
-            println("--------------------------");
-            println("{:?}", data);
-            println("--------------------------");
-            println("{:?}", custom_fee_statement);
+            println!("--------------------------");
+            println!("{:?}", data);
+            println!("--------------------------");
+            println!("{:?}", custom_fee_statement);
             Some(custom_fee_statement.into())
         } else {
             None
