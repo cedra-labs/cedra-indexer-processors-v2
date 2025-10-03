@@ -23,6 +23,20 @@ const FUNGIBLE_ASSET_LENGTH: usize = 32;
 const FUNGIBLE_ASSET_SYMBOL: usize = 32;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct CustomFeeStatement {
+    #[serde(deserialize_with = "deserialize_from_string")]
+    pub storage_fee_refund_octas: u64,
+}
+
+impl From<CustomFeeStatement> for FeeStatement {
+    fn from(c: CustomFeeStatement) -> Self {
+        FeeStatement {
+            storage_fee_refund_octas: c.storage_fee_refund_octas,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FeeStatement {
     #[serde(deserialize_with = "deserialize_from_string")]
     pub storage_fee_refund_octas: u64,
@@ -30,7 +44,7 @@ pub struct FeeStatement {
 
 impl FeeStatement {
     pub fn from_event(data_type: &str, data: &str, txn_version: i64) -> Option<Self> {
-        if data_type == "0x1::transaction_fee::FeeStatement" || data_type == "0x1::transaction_fee::CustomFeeStatement" {
+        if data_type == "0x1::transaction_fee::FeeStatement" {
             let fee_statement: FeeStatement = serde_json::from_str(data).unwrap_or_else(|_| {
                 tracing::error!(
                     transaction_version = txn_version,
@@ -40,6 +54,16 @@ impl FeeStatement {
                 panic!();
             });
             Some(fee_statement)
+        } else if data_type == "0x1::transaction_fee::CustomFeeStatement" {
+            let custom_fee_statement: CustomFeeStatement = serde_json::from_str(data).unwrap_or_else(|_| {
+                tracing::error!(
+                    transaction_version = txn_version,
+                    data = data,
+                    "failed to parse event for fee statement"
+                );
+                panic!();
+            });
+            Some(custom_fee_statement.into())
         } else {
             None
         }
