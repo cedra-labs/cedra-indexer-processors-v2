@@ -30,7 +30,7 @@ pub struct FeeStatement {
 
 impl FeeStatement {
     pub fn from_event(data_type: &str, data: &str, txn_version: i64) -> Option<Self> {
-        if data_type == "0x1::transaction_fee::FeeStatement" {
+        if data_type == "0x1::transaction_fee::FeeStatement" || data_type == "0x1::transaction_fee::CustomFeeStatement" {
             let fee_statement: FeeStatement = serde_json::from_str(data).unwrap_or_else(|_| {
                 tracing::error!(
                     transaction_version = txn_version,
