@@ -6,13 +6,10 @@
 #![allow(clippy::unused_unit)]
 
 use super::ans_utils::AnsTableItem;
-use crate::schema::{ans_lookup, ans_primary_name, current_ans_lookup, current_ans_primary_name};
 use aptos_indexer_processor_sdk::{
     aptos_protos::transaction::v1::{DeleteTableItem, WriteTableItem},
     utils::{convert::standardize_address, extract::get_name_from_unnested_move_type},
 };
-use diesel::prelude::*;
-use field_count::FieldCount;
 use serde::{Deserialize, Serialize};
 
 type Domain = String;
@@ -22,21 +19,9 @@ type CurrentAnsLookupPK = (Domain, Subdomain);
 // PK of current_ans_primary_name, i.e. registered_address
 type CurrentAnsPrimaryNamePK = String;
 
-#[derive(
-    Clone,
-    Default,
-    Debug,
-    Deserialize,
-    FieldCount,
-    Identifiable,
-    Insertable,
-    Serialize,
-    PartialEq,
-    Eq,
-)]
-#[diesel(primary_key(domain, subdomain))]
-#[diesel(table_name = current_ans_lookup)]
-#[diesel(treat_none_as_null = true)]
+// This was previously a model for an ANS v1 table, but that table has been deprecated.
+// However, the struct is still used for parsing ANS v1 data before v2 was introduced.
+#[derive(Clone, Default, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub struct CurrentAnsLookup {
     pub domain: String,
     pub subdomain: String,
@@ -48,10 +33,8 @@ pub struct CurrentAnsLookup {
 }
 
 // TODO: This has to be deprecated, but currently there is a usage in ans_lookup_v2 model file which is not yet deprecated.
-#[derive(Clone, Default, Debug, Deserialize, FieldCount, Identifiable, Insertable, Serialize)]
-#[diesel(primary_key(transaction_version, write_set_change_index))]
-#[diesel(table_name = ans_lookup)]
-#[diesel(treat_none_as_null = true)]
+// Note: These structs are used only for parsing v1 data and converting to v2. The v1 tables have been dropped.
+#[derive(Clone, Default, Debug, Deserialize, Serialize)]
 pub struct AnsLookup {
     pub transaction_version: i64,
     pub write_set_change_index: i64,
@@ -63,21 +46,9 @@ pub struct AnsLookup {
     pub is_deleted: bool,
 }
 
-#[derive(
-    Clone,
-    Default,
-    Debug,
-    Deserialize,
-    FieldCount,
-    Identifiable,
-    Insertable,
-    Serialize,
-    PartialEq,
-    Eq,
-)]
-#[diesel(primary_key(registered_address, token_name))]
-#[diesel(table_name = current_ans_primary_name)]
-#[diesel(treat_none_as_null = true)]
+// TODO: This has to be deprecated, but currently there is a usage in ans_primary_name_v2 model file which is not yet deprecated.
+// Note: These structs are used only for parsing v1 data and converting to v2. The v1 tables have been dropped.
+#[derive(Clone, Default, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub struct CurrentAnsPrimaryName {
     pub registered_address: String,
     pub domain: Option<String>,
@@ -87,10 +58,9 @@ pub struct CurrentAnsPrimaryName {
     pub last_transaction_version: i64,
 }
 
-#[derive(Clone, Default, Debug, Deserialize, FieldCount, Identifiable, Insertable, Serialize)]
-#[diesel(primary_key(transaction_version, write_set_change_index, domain, subdomain))]
-#[diesel(table_name = ans_primary_name)]
-#[diesel(treat_none_as_null = true)]
+// TODO: This has to be deprecated, but currently there is a usage in ans_primary_name_v2 model file which is not yet deprecated.
+// Note: These structs are used only for parsing v1 data and converting to v2. The v1 tables have been dropped.
+#[derive(Clone, Default, Debug, Deserialize, Serialize)]
 pub struct AnsPrimaryName {
     pub transaction_version: i64,
     pub write_set_change_index: i64,
