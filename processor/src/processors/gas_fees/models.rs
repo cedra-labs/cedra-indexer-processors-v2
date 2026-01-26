@@ -5,9 +5,9 @@ use crate::{
     },
     schema::gas_fees,
 };
-use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::{
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp,
+    cedra_protos::transaction::v1::{
         transaction::TxnData, Transaction, TransactionInfo, UserTransactionRequest,
     },
     utils::{
@@ -87,7 +87,7 @@ impl GasFee {
         block_height: i64,
         fee_statement: Option<FeeStatement>,
     ) -> Self {
-        let aptos_coin_burned =
+        let cedra_coin_burned =
             BigDecimal::from(txn_info.gas_used * user_transaction_request.gas_unit_price);
         let gas_fee_payer_address = match user_transaction_request.signature.as_ref() {
             Some(signature) => get_fee_payer_address(signature, transaction_version),
@@ -99,7 +99,7 @@ impl GasFee {
             owner_address: Some(standardize_address(
                 &user_transaction_request.sender.to_string(),
             )),
-            amount: Some(aptos_coin_burned),
+            amount: Some(cedra_coin_burned),
             gas_fee_payer_address,
             is_transaction_success: txn_info.success,
             entry_function_id_str: entry_function_id_str.clone(),

@@ -16,9 +16,8 @@
       2,
       3
     ],
-    "function_info": null,
-    "any_signature_type": null,
-    "public_key_type": null
+    "public_key_type": null,
+    "any_signature_type": null
   },
   {
     "transaction_version": 2175935,
@@ -37,9 +36,8 @@
       2,
       3
     ],
-    "function_info": null,
-    "any_signature_type": null,
-    "public_key_type": null
+    "public_key_type": null,
+    "any_signature_type": null
   },
   {
     "transaction_version": 2175935,
@@ -58,9 +56,8 @@
       2,
       3
     ],
-    "function_info": null,
-    "any_signature_type": null,
-    "public_key_type": null
+    "public_key_type": null,
+    "any_signature_type": null
   },
   {
     "transaction_version": 2175935,
@@ -79,8 +76,7 @@
       2,
       3
     ],
-    "function_info": null,
-    "any_signature_type": null,
-    "public_key_type": null
+    "public_key_type": null,
+    "any_signature_type": null
   }
 ]

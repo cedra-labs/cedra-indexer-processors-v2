@@ -1,7 +1,7 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 use anyhow::Result;
-use aptos_indexer_processor_sdk::server_framework::ServerArgs;
+use cedra_indexer_processor_sdk::server_framework::ServerArgs;
 use clap::Parser;
 use processor::config::indexer_processor_config::IndexerProcessorConfig;
 

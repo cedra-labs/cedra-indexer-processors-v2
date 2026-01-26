@@ -2,8 +2,8 @@
   {
     "asset_type": "0x000000000000000000000000000000000000000000000000000000000000000a",
     "creator_address": "0x0000000000000000000000000000000000000000000000000000000000000001",
-    "name": "Aptos Coin",
-    "symbol": "APT",
+    "name": "Cedra Coin",
+    "symbol": "Cedra",
     "decimals": 8,
     "icon_uri": "",
     "project_uri": "",

@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use super::account_restoration_utils::KeyRotationToPublicKeyEvent;
@@ -13,7 +13,7 @@ use crate::{
     schema::public_key_auth_keys,
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::cedra_protos::transaction::v1::{
     account_signature::{Signature as AccountSignature, Type as AccountSignatureTypeEnum},
     any_public_key::Type as AnyPublicKeyEnum,
     signature::Signature as SignatureEnum,
@@ -22,13 +22,13 @@ use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::{
 use field_count::FieldCount;
 use serde::{Deserialize, Serialize};
 
-pub type PublicKeyAuthKeyMapping = AHashMap<(String, String, String, bool), PublicKeyAuthKey>;
+pub type PublicKeyAuthKeyMapping = AHashMap<(String, String), PublicKeyAuthKey>;
 
 const ED25519_SCHEME: u8 = 0;
 const MULTI_ED25519_SCHEME: u8 = 1;
 const SINGLE_KEY_SCHEME: u8 = 2;
 const MULTI_KEY_SCHEME: u8 = 3;
-const MAX_ACCOUNT_PUBLIC_KEY_LENGTH: usize = 13000;
+const MAX_ACCOUNT_PUBLIC_KEY_LENGTH: usize = 3000;
 
 #[derive(
     Clone,
@@ -134,7 +134,7 @@ impl PublicKeyAuthKeyHelper {
         if account_public_key.len() > MAX_ACCOUNT_PUBLIC_KEY_LENGTH {
             tracing::warn!(
                 transaction_version,
-                "Multi key signature with more than 13000 characters not supported"
+                "Multi key signature with more than 3000 characters not supported"
             );
             return None;
         };
@@ -193,7 +193,7 @@ impl PublicKeyAuthKeyHelper {
                 if account_public_key.len() > MAX_ACCOUNT_PUBLIC_KEY_LENGTH {
                     tracing::warn!(
                         transaction_version,
-                        "Multi key signature with more than 13000 characters not supported"
+                        "Multi key signature with more than 3000 characters not supported"
                     );
                     return None;
                 };
@@ -219,22 +219,25 @@ impl PublicKeyAuthKeyHelper {
         }
     }
 
-    pub fn get_public_key_auth_keys(
+    pub fn get_public_keys(
         helper: &PublicKeyAuthKeyHelper,
         auth_key: &str,
         transaction_version: i64,
-    ) -> Vec<PublicKeyAuthKey> {
+    ) -> PublicKeyAuthKeyMapping {
         helper
             .keys
             .iter()
-            .map(|key| PublicKeyAuthKey {
-                public_key: key.public_key.clone(),
-                public_key_type: key.public_key_type.clone(),
-                auth_key: auth_key.to_string(),
-                account_public_key: helper.account_public_key.clone(),
-                is_public_key_used: key.is_public_key_used,
-                last_transaction_version: transaction_version,
-                signature_type: helper.signature_type.clone(),
+            .map(|key| {
+                let key_tuple = (auth_key.to_string(), key.public_key.clone());
+                (key_tuple, PublicKeyAuthKey {
+                    public_key: key.public_key.clone(),
+                    public_key_type: key.public_key_type.clone(),
+                    auth_key: auth_key.to_string(),
+                    account_public_key: helper.account_public_key.clone(),
+                    is_public_key_used: key.is_public_key_used,
+                    last_transaction_version: transaction_version,
+                    signature_type: helper.signature_type.clone(),
+                })
             })
             .collect()
     }
@@ -278,7 +281,7 @@ impl PartialOrd for PublicKeyAuthKey {
 }
 
 // Below are just types and convenience functions for the multi key deserialization.
-// Ideally we would use aptos-crypto or aptos-types to deserialize these types, but
+// Ideally we would use cedra-crypto or cedra-types to deserialize these types, but
 // there is a blocking incompatible dependency.
 fn any_public_key_to_serialized_string(key: &AnyPublicKey) -> String {
     // The type is 1-indexed in the proto, but 0-indexed in the code so we subtract 1

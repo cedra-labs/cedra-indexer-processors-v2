@@ -13,7 +13,7 @@ use crate::{
     schema::backfill_processor_status,
 };
 use anyhow::Result;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     postgres::{
         models::processor_status::ProcessorStatusQuery,
         utils::database::{execute_with_better_error, ArcDbPool},
@@ -359,8 +359,8 @@ mod tests {
         db::backfill_processor_status::{BackfillProcessorStatus, BackfillStatus},
         MIGRATIONS,
     };
-    use aptos_indexer_processor_sdk::{
-        aptos_indexer_transaction_stream::{
+    use cedra_indexer_processor_sdk::{
+        cedra_indexer_transaction_stream::{
             utils::additional_headers::AdditionalHeaders, TransactionStreamConfig,
         },
         postgres::{
@@ -463,7 +463,7 @@ mod tests {
 
         for (i, table_name) in table_names.into_iter().enumerate() {
             diesel::insert_into(
-                aptos_indexer_processor_sdk::postgres::processor_metadata_schema::processor_metadata::processor_status::table,
+                cedra_indexer_processor_sdk::postgres::processor_metadata_schema::processor_metadata::processor_status::table,
             )
             .values(ProcessorStatus {
                 processor: table_name,
@@ -657,7 +657,7 @@ mod tests {
 
         for (i, table_name) in table_names.into_iter().enumerate() {
             diesel::insert_into(
-                aptos_indexer_processor_sdk::postgres::processor_metadata_schema::processor_metadata::processor_status::table,
+                cedra_indexer_processor_sdk::postgres::processor_metadata_schema::processor_metadata::processor_status::table,
             )
             .values(ProcessorStatus {
                 processor: table_name,

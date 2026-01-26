@@ -1,17 +1,17 @@
-# Aptos Core Processors (SDK version)
-Processors that index data from the Aptos Transaction Stream (GRPC). These processors have been (re)-written using the new Indexer SDK.
+# Cedra Core Processors (SDK version)
+Processors that index data from the Cedra Transaction Stream (GRPC). These processors have been (re)-written using the new Indexer SDK.
 
 - **Note: Official releases coming soon!**
 
 ## Overview
-This tutorial shows you how to run the Aptos core processors in this repo.
+This tutorial shows you how to run the Cedra core processors in this repo.
 
-If you want to index a custom contract, we recommend using the [Quickstart Guide](https://aptos.dev/en/build/indexer/indexer-sdk/quickstart).
+If you want to index a custom contract, we recommend using the [Quickstart Guide](https://cedra.dev/en/build/indexer/indexer-sdk/quickstart).
 
 ### Prerequisite
 
 - A running PostgreSQL instance, with a valid database. More tutorial can be
-  found [here](https://github.com/aptos-labs/aptos-core/tree/main/crates/indexer#postgres)
+  found [here](https://github.com/cedra-labs/cedra-core/tree/main/crates/indexer#postgres)
 
 - [diesel-cli](https://diesel.rs/guides/getting-started)
 
@@ -49,8 +49,8 @@ If you want to index a custom contract, we recommend using the [Quickstart Guide
         ``
 
 - `transaction_stream_config`
-    - `indexer_grpc_data_service_address`: Data service non-TLS endpoint address. See [available Transaction Stream endpoints](https://aptos.dev/en/build/indexer/txn-stream/aptos-hosted-txn-stream).
-    - `auth_token`: Auth token used for connection. See [instructions on how to get an auth token](https://aptos.dev/en/build/indexer/txn-stream/aptos-hosted-txn-stream).
+    - `indexer_grpc_data_service_address`: Data service non-TLS endpoint address.
+    - `auth_token`: Auth token used for connection.
     - `request_name_header`: request name header to append to the grpc request; name of the processor
     - `additional_headers`: addtional headers to append to the grpc request
     - `indexer_grpc_http2_ping_interval_in_secs`: client-side grpc HTTP2 ping interval.
@@ -81,4 +81,4 @@ If you want to index a custom contract, we recommend using the [Quickstart Guide
 ## Processor Specific Notes
 
 ### Supported Coin Type Mappings
-See mapping in [v2_fungible_asset_balances.rs](https://github.com/aptos-labs/aptos-indexer-processors/blob/main/rust/processor/src/db/common/models/fungible_asset_models/v2_fungible_asset_balances.rs#L40) for a list supported coin type mappings.
+See mapping in [v2_fungible_asset_balances.rs](https://github.com/cedra-labs/cedra-indexer-processors/blob/main/rust/processor/src/db/common/models/fungible_asset_models/v2_fungible_asset_balances.rs#L40) for a list supported coin type mappings.

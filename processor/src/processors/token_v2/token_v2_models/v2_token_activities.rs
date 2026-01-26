@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -11,8 +11,8 @@ use crate::{
         objects::v2_object_utils::ObjectAggregatedDataMapping,
         token_v2::{
             token_models::{
+                token_claims::TokenV1Claimed,
                 token_utils::{TokenDataIdType, TokenEvent},
-                tokens::TokenV1AggregatedEventsMapping,
             },
             token_v2_models::v2_token_utils::{TokenStandard, V2TokenEvent},
         },
@@ -20,8 +20,8 @@ use crate::{
     schema::token_activities_v2,
 };
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::Event, utils::convert::standardize_address,
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::Event, utils::convert::standardize_address,
 };
 use bigdecimal::{BigDecimal, One, ToPrimitive, Zero};
 use field_count::FieldCount;
@@ -75,7 +75,6 @@ impl TokenActivityV2 {
         event_index: i64,
         entry_function_id_str: &Option<String>,
         token_v2_metadata: &ObjectAggregatedDataMapping,
-        sender: &str,
     ) -> anyhow::Result<Option<Self>> {
         let event_type = event.type_str.clone();
         if let Some(token_event) =
@@ -94,14 +93,10 @@ impl TokenActivityV2 {
             };
 
             if let Some(metadata) = token_v2_metadata.get(&token_data_id) {
-                // If there is no ObjectCore resource, then use 0x0 as the owner
-                let owner_address = metadata
-                    .object
-                    .as_ref()
-                    .map(|object| object.object_core.get_owner_address());
+                let object_core = &metadata.object.object_core;
                 let token_activity_helper = match token_event {
                     V2TokenEvent::MintEvent(_) => TokenActivityHelperV2 {
-                        from_address: owner_address,
+                        from_address: Some(object_core.get_owner_address()),
                         to_address: None,
                         token_amount: BigDecimal::one(),
                         before_value: None,
@@ -109,7 +104,7 @@ impl TokenActivityV2 {
                         event_type: event_type.clone(),
                     },
                     V2TokenEvent::Mint(_) => TokenActivityHelperV2 {
-                        from_address: owner_address,
+                        from_address: Some(object_core.get_owner_address()),
                         to_address: None,
                         token_amount: BigDecimal::one(),
                         before_value: None,
@@ -117,8 +112,7 @@ impl TokenActivityV2 {
                         event_type: "0x4::collection::MintEvent".to_string(),
                     },
                     V2TokenEvent::TokenMutationEvent(inner) => TokenActivityHelperV2 {
-                        // whoever submitted the mutation event is the from address
-                        from_address: Some(sender.to_owned()),
+                        from_address: Some(object_core.get_owner_address()),
                         to_address: None,
                         token_amount: BigDecimal::zero(),
                         before_value: Some(inner.old_value.clone()),
@@ -134,16 +128,15 @@ impl TokenActivityV2 {
                         event_type: "0x4::collection::MutationEvent".to_string(),
                     },
                     V2TokenEvent::BurnEvent(_) => TokenActivityHelperV2 {
-                        from_address: owner_address,
+                        from_address: Some(object_core.get_owner_address()),
                         to_address: None,
                         token_amount: BigDecimal::one(),
                         before_value: None,
                         after_value: None,
                         event_type: event_type.clone(),
                     },
-                    V2TokenEvent::Burn(inner) => TokenActivityHelperV2 {
-                        // the new burn event has owner address now!
-                        from_address: inner.get_previous_owner_address(),
+                    V2TokenEvent::Burn(_) => TokenActivityHelperV2 {
+                        from_address: Some(object_core.get_owner_address()),
                         to_address: None,
                         token_amount: BigDecimal::one(),
                         before_value: None,
@@ -177,7 +170,7 @@ impl TokenActivityV2 {
                     transaction_timestamp: txn_timestamp,
                 }));
             } else {
-                // If the token resource isn't found in the transaction, then the token was burnt.
+                // If the object metadata isn't found in the transaction, then the token was burnt.
 
                 // the new burn event has owner address now!
                 let owner_address = if let V2TokenEvent::Burn(inner) = token_event {
@@ -193,7 +186,7 @@ impl TokenActivityV2 {
                     event_account_address,
                     token_data_id,
                     property_version_v1: BigDecimal::zero(),
-                    type_: event_type.clone(),
+                    type_: event_type,
                     from_address: owner_address.clone(),
                     to_address: None,
                     token_amount: BigDecimal::one(),
@@ -215,7 +208,7 @@ impl TokenActivityV2 {
         txn_timestamp: chrono::NaiveDateTime,
         event_index: i64,
         entry_function_id_str: &Option<String>,
-        token_v1_aggregated_events: &mut TokenV1AggregatedEventsMapping,
+        tokens_claimed: &mut TokenV1Claimed,
     ) -> anyhow::Result<Option<Self>> {
         let event_type = event.type_str.clone();
         if let Some(token_event) = &TokenEvent::from_event(&event_type, &event.data, txn_version)? {
@@ -271,22 +264,12 @@ impl TokenActivityV2 {
                     to_address: None,
                     token_amount: inner.amount.clone(),
                 },
-                // This is the module v2 event
-                TokenEvent::TokenWithdraw(inner) => {
-                    let token_data_id_struct = inner.id.token_data_id.clone();
-                    let helper = TokenActivityHelperV1 {
-                        token_data_id_struct: inner.id.token_data_id.clone(),
-                        property_version: inner.id.property_version.clone(),
-                        from_address: Some(inner.get_account()),
-                        to_address: None,
-                        token_amount: inner.amount.clone(),
-                    };
-                    token_v1_aggregated_events
-                        .entry(token_data_id_struct.to_id())
-                        .or_default()
-                        .withdraw_module_events
-                        .push(helper.clone());
-                    helper
+                TokenEvent::TokenWithdraw(inner) => TokenActivityHelperV1 {
+                    token_data_id_struct: inner.id.token_data_id.clone(),
+                    property_version: inner.id.property_version.clone(),
+                    from_address: Some(inner.get_account()),
+                    to_address: None,
+                    token_amount: inner.amount.clone(),
                 },
                 TokenEvent::DepositTokenEvent(inner) => TokenActivityHelperV1 {
                     token_data_id_struct: inner.id.token_data_id.clone(),
@@ -295,22 +278,12 @@ impl TokenActivityV2 {
                     to_address: Some(standardize_address(&event_account_address)),
                     token_amount: inner.amount.clone(),
                 },
-                // This is the module v2 event
-                TokenEvent::TokenDeposit(inner) => {
-                    let token_data_id_struct = inner.id.token_data_id.clone();
-                    let helper = TokenActivityHelperV1 {
-                        token_data_id_struct: inner.id.token_data_id.clone(),
-                        property_version: inner.id.property_version.clone(),
-                        from_address: None,
-                        to_address: Some(inner.get_account()),
-                        token_amount: inner.amount.clone(),
-                    };
-                    token_v1_aggregated_events
-                        .entry(token_data_id_struct.to_id())
-                        .or_default()
-                        .deposit_module_events
-                        .push(helper.clone());
-                    helper
+                TokenEvent::TokenDeposit(inner) => TokenActivityHelperV1 {
+                    token_data_id_struct: inner.id.token_data_id.clone(),
+                    property_version: inner.id.property_version.clone(),
+                    from_address: None,
+                    to_address: Some(inner.get_account()),
+                    token_amount: inner.amount.clone(),
                 },
                 TokenEvent::OfferTokenEvent(inner) => TokenActivityHelperV1 {
                     token_data_id_struct: inner.token_id.token_data_id.clone(),
@@ -319,46 +292,12 @@ impl TokenActivityV2 {
                     to_address: Some(inner.get_to_address()),
                     token_amount: inner.amount.clone(),
                 },
-                // This is the module v2 event
-                TokenEvent::Offer(inner) => TokenActivityHelperV1 {
+                TokenEvent::CancelTokenOfferEvent(inner) => TokenActivityHelperV1 {
                     token_data_id_struct: inner.token_id.token_data_id.clone(),
                     property_version: inner.token_id.property_version.clone(),
-                    from_address: Some(inner.get_from_address()),
+                    from_address: Some(event_account_address.clone()),
                     to_address: Some(inner.get_to_address()),
                     token_amount: inner.amount.clone(),
-                },
-                TokenEvent::CancelTokenOfferEvent(inner) => {
-                    let token_data_id_struct = inner.token_id.token_data_id.clone();
-                    let helper = TokenActivityHelperV1 {
-                        token_data_id_struct: inner.token_id.token_data_id.clone(),
-                        property_version: inner.token_id.property_version.clone(),
-                        from_address: Some(event_account_address.clone()),
-                        to_address: Some(inner.get_to_address()),
-                        token_amount: inner.amount.clone(),
-                    };
-                    token_v1_aggregated_events
-                        .entry(token_data_id_struct.to_id())
-                        .or_default()
-                        .token_offer_cancel_module_events
-                        .push(helper.clone());
-                    helper
-                },
-                // This is the module v2 event
-                TokenEvent::CancelOffer(inner) => {
-                    let token_data_id_struct = inner.token_id.token_data_id.clone();
-                    let helper = TokenActivityHelperV1 {
-                        token_data_id_struct: inner.token_id.token_data_id.clone(),
-                        property_version: inner.token_id.property_version.clone(),
-                        from_address: Some(inner.get_from_address()),
-                        to_address: Some(inner.get_to_address()),
-                        token_amount: inner.amount.clone(),
-                    };
-                    token_v1_aggregated_events
-                        .entry(token_data_id_struct.to_id())
-                        .or_default()
-                        .token_offer_cancel_module_events
-                        .push(helper.clone());
-                    helper
                 },
                 TokenEvent::ClaimTokenEvent(inner) => {
                     let token_data_id_struct = inner.token_id.token_data_id.clone();
@@ -369,14 +308,23 @@ impl TokenActivityV2 {
                         to_address: Some(inner.get_to_address()),
                         token_amount: inner.amount.clone(),
                     };
-                    token_v1_aggregated_events
-                        .entry(token_data_id_struct.to_id())
-                        .or_default()
-                        .token_offer_claim_module_events
-                        .push(helper.clone());
+                    tokens_claimed.insert(token_data_id_struct.to_id(), helper.clone());
                     helper
                 },
-                // This is the module v2 event
+                TokenEvent::Offer(inner) => TokenActivityHelperV1 {
+                    token_data_id_struct: inner.token_id.token_data_id.clone(),
+                    property_version: inner.token_id.property_version.clone(),
+                    from_address: Some(inner.get_from_address()),
+                    to_address: Some(inner.get_to_address()),
+                    token_amount: inner.amount.clone(),
+                },
+                TokenEvent::CancelOffer(inner) => TokenActivityHelperV1 {
+                    token_data_id_struct: inner.token_id.token_data_id.clone(),
+                    property_version: inner.token_id.property_version.clone(),
+                    from_address: Some(inner.get_from_address()),
+                    to_address: Some(inner.get_to_address()),
+                    token_amount: inner.amount.clone(),
+                },
                 TokenEvent::Claim(inner) => {
                     let token_data_id_struct = inner.token_id.token_data_id.clone();
                     let helper = TokenActivityHelperV1 {
@@ -386,11 +334,7 @@ impl TokenActivityV2 {
                         to_address: Some(inner.get_to_address()),
                         token_amount: inner.amount.clone(),
                     };
-                    token_v1_aggregated_events
-                        .entry(token_data_id_struct.to_id())
-                        .or_default()
-                        .token_offer_claim_module_events
-                        .push(helper.clone());
+                    tokens_claimed.insert(token_data_id_struct.to_id(), helper.clone());
                     helper
                 },
             };
@@ -401,7 +345,7 @@ impl TokenActivityV2 {
                 event_account_address,
                 token_data_id: token_data_id_struct.to_id(),
                 property_version_v1: token_activity_helper.property_version,
-                type_: event_type.clone(),
+                type_: event_type,
                 from_address: token_activity_helper.from_address,
                 to_address: token_activity_helper.to_address,
                 token_amount: token_activity_helper.token_amount,

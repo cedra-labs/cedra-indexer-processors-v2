@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -6,7 +6,7 @@
 #![allow(clippy::unused_unit)]
 
 use crate::{
-    db::resources::{FromWriteResource, BURN_ADDR},
+    db::resources::FromWriteResource,
     parquet_processors::parquet_utils::util::{HasVersion, NamedTable},
     processors::{
         fungible_asset::{
@@ -20,8 +20,8 @@ use crate::{
 };
 use ahash::AHashMap;
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{DeleteResource, WriteResource},
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::{DeleteResource, WriteResource},
     utils::convert::standardize_address,
 };
 use bigdecimal::BigDecimal;
@@ -65,9 +65,7 @@ impl FungibleAssetMetadataModel {
             // the new coin type
             let asset_type = standardize_address(&write_resource.address.to_string());
             if let Some(object_metadata) = object_metadatas.get(&asset_type) {
-                let owner_address = object_metadata
-                    .get_owner_address()
-                    .unwrap_or(String::from(BURN_ADDR));
+                let object = &object_metadata.object.object_core;
                 let (maximum_v2, supply_v2) = if let Some(fungible_asset_supply) =
                     object_metadata.fungible_asset_supply.as_ref()
                 {
@@ -88,7 +86,7 @@ impl FungibleAssetMetadataModel {
 
                 return Ok(Some(Self {
                     asset_type: asset_type.clone(),
-                    creator_address: owner_address,
+                    creator_address: object.get_owner_address(),
                     name: inner.get_name(),
                     symbol: inner.get_symbol(),
                     decimals: inner.decimals,

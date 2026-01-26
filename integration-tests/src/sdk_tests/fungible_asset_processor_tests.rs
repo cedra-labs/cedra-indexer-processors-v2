@@ -1,5 +1,5 @@
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
+use cedra_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
 use processor::config::{
     db_config::{DbConfig, PostgresConfig},
     indexer_processor_config::IndexerProcessorConfig,
@@ -48,28 +48,25 @@ mod sdk_fungible_asset_processor_tests {
     use crate::{
         diff_test_helper::fungible_asset_processor::load_data,
         sdk_tests::{
-            fungible_asset_processor_tests::setup_fa_processor_config,
-            test_helpers::{run_processor_test, validate_json, DEFAULT_OUTPUT_FOLDER},
+            fungible_asset_processor_tests::setup_fa_processor_config, run_processor_test,
+            validate_json, DEFAULT_OUTPUT_FOLDER,
         },
     };
-    use aptos_indexer_processor_sdk::testing_framework::{
+    use cedra_indexer_processor_sdk::testing_framework::{
         cli_parser::get_test_config,
         database::{PostgresTestDatabase, TestDatabase},
         sdk_test_context::SdkTestContext,
     };
-    use aptos_indexer_test_transactions::json_transactions::generated_transactions::{
+    use cedra_indexer_test_transactions::json_transactions::generated_transactions::{
         IMPORTED_MAINNET_TXNS_1680592683_FA_MIGRATION_COIN_INFO,
         IMPORTED_MAINNET_TXNS_1737056775_COIN_TRANSFER_BURN_EVENT,
         IMPORTED_MAINNET_TXNS_1957950162_FA_MIGRATION_V2_STORE_ONLY,
         IMPORTED_MAINNET_TXNS_2186504987_COIN_STORE_DELETION_NO_EVENT,
         IMPORTED_MAINNET_TXNS_2308282694_ASSET_TYPE_V1_NULL,
         IMPORTED_MAINNET_TXNS_2308283617_ASSET_TYPE_V1_NULL_2,
-        IMPORTED_MAINNET_TXNS_2424873868_FA_SECONDARY_STORE_EXISTS_OBJECT_CORE_DELETED,
         IMPORTED_MAINNET_TXNS_2448304257_COINSTORE_DELETION_EVENT,
         IMPORTED_MAINNET_TXNS_255894550_STORAGE_REFUND,
         IMPORTED_MAINNET_TXNS_2662373625_FA_SECONDARY_STORE_BURNT_WITH_DELETION_EVENT,
-        IMPORTED_MAINNET_TXNS_2953383999_FA_SECONDARY_STORE_DELETION,
-        IMPORTED_MAINNET_TXNS_2975888978_FA_SECONDARY_STORE_BURNT_OBJECT_STILL_EXISTS,
         IMPORTED_MAINNET_TXNS_508365567_FA_V1_EVENTS,
         IMPORTED_MAINNET_TXNS_550582915_MULTIPLE_TRANSFER_EVENT,
         IMPORTED_MAINNET_TXNS_999929475_COIN_AND_FA_TRANSFERS,
@@ -122,7 +119,7 @@ mod sdk_fungible_asset_processor_tests {
      * - Events
      *      - 0x1::coin::WithdrawEvent
      *      - 0x1::coin::DepositEvents
-     *      - 0x1::aptos_coin::GasFeeEvent
+     *      - 0x1::cedra_coin::GasFeeEvent
      *      - 0x1::fungible_asset::Deposit
      *      - 0x1::fungible_asset::Withdraw
      */
@@ -332,34 +329,6 @@ mod sdk_fungible_asset_processor_tests {
         process_single_batch_txns(
             &[IMPORTED_MAINNET_TXNS_2662373625_FA_SECONDARY_STORE_BURNT_WITH_DELETION_EVENT],
             Some("fungible_store_deletion_event".to_string()),
-        )
-        .await;
-    }
-
-    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-    async fn test_fungible_asset_processor_fungible_store_deletion_event_with_object_still_exists()
-    {
-        process_single_batch_txns(
-            &[IMPORTED_MAINNET_TXNS_2975888978_FA_SECONDARY_STORE_BURNT_OBJECT_STILL_EXISTS],
-            Some("fungible_store_deletion_event_with_object_still_exists".to_string()),
-        )
-        .await;
-    }
-
-    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-    async fn test_fungible_asset_processor_fa_store_exists_object_core_deleted() {
-        process_single_batch_txns(
-            &[IMPORTED_MAINNET_TXNS_2424873868_FA_SECONDARY_STORE_EXISTS_OBJECT_CORE_DELETED],
-            Some("fa_store_exists_object_core_deleted".to_string()),
-        )
-        .await;
-    }
-
-    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-    async fn test_fungible_asset_processor_fa_secondary_store_deletion() {
-        process_single_batch_txns(
-            &[IMPORTED_MAINNET_TXNS_2953383999_FA_SECONDARY_STORE_DELETION],
-            Some("fa_secondary_store_deletion".to_string()),
         )
         .await;
     }

@@ -7,7 +7,7 @@ server_config:
     max_buffer_size: 100000000 # 300MB to keep the number of files low in GCS.
     upload_interval: 30 # if buffer hasn't reached 300MB within 30 mins, we upload the buffer to GCS
   transaction_stream_config:
-    indexer_grpc_data_service_address: "https://grpc.mainnet.aptoslabs.com:443"
+    indexer_grpc_data_service_address: "https://grpc.mainnet.cedralabs.com:443"
     auth_token: "AUTH_TOKEN"
     request_name_header: "parquet_transaction_metadata_processor"
   processor_mode:
@@ -16,5 +16,5 @@ server_config:
   db_config:
     type: parquet_config
     connection_string: postgresql://postgres:@localhost:5432/example
-    bucket_name: "aptos-indexer-data-etl-yuunnet"
+    bucket_name: "cedra-indexer-data-etl-yuunnet"
     bucket_root: "new-repo-migration"

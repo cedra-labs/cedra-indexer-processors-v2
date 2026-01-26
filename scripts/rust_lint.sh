@@ -5,14 +5,14 @@
 #
 # The best way to do this however is to run scripts/dev_setup.sh
 #
-# If you want to run this from anywhere in aptos-core, try adding this wrapper
+# If you want to run this from anywhere in cedra-core, try adding this wrapper
 # script to your path:
 # https://gist.github.com/banool/e6a2b85e2fff067d3a215cbfaf808032
 
 # Make sure we're in the root of the repo.
 if [ ! -f "scripts/rust_lint.sh" ] 
 then
-    echo "Please run this from the aptos-indexer-processors-v2 directory." 
+    echo "Please run this from the cedra-indexer-processors-v2 directory." 
     exit 1
 fi
 

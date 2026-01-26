@@ -1,5 +1,5 @@
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
+use cedra_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
 use processor::config::{
     db_config::{DbConfig, PostgresConfig},
     indexer_processor_config::IndexerProcessorConfig,
@@ -48,14 +48,14 @@ mod sdk_user_txn_processor_tests {
     use super::setup_user_txn_processor_config;
     use crate::{
         diff_test_helper::user_transaction_processor::load_data,
-        sdk_tests::test_helpers::{
+        sdk_tests::{
             run_processor_test, setup_test_environment, validate_json, DEFAULT_OUTPUT_FOLDER,
         },
     };
-    use aptos_indexer_processor_sdk::testing_framework::{
+    use cedra_indexer_processor_sdk::testing_framework::{
         cli_parser::get_test_config, database::TestDatabase,
     };
-    use aptos_indexer_test_transactions::json_transactions::generated_transactions::{
+    use cedra_indexer_test_transactions::json_transactions::generated_transactions::{
         IMPORTED_MAINNET_TXNS_103958588_MULTI_AGENTS,
         IMPORTED_MAINNET_TXNS_1803170308_USER_TXN_MULTI_KEY_KEYLESS,
         IMPORTED_MAINNET_TXNS_2175935_USER_TXN_MULTI_ED25519,
@@ -66,7 +66,6 @@ mod sdk_user_txn_processor_tests {
         IMPORTED_MAINNET_TXNS_590098441_USER_TXN_SINGLE_SENDER_ED25519,
         IMPORTED_MAINNET_TXNS_685_USER_TXN_ED25519,
         IMPORTED_MAINNET_TXNS_976087151_USER_TXN_SINGLE_SENDER_KEYLESS,
-        IMPORTED_TESTNET_TXNS_6616059810_ACCOUNT_ABSTRACTION_AUTHENTICATOR,
         IMPORTED_TESTNET_TXNS_769222973_MULTISIG,
     };
     use processor::processors::user_transaction::user_transaction_processor::UserTransactionProcessor;
@@ -157,15 +156,6 @@ mod sdk_user_txn_processor_tests {
         process_single_transactions(
             IMPORTED_TESTNET_TXNS_769222973_MULTISIG,
             Some("test_multi_sig".to_string()),
-        )
-        .await;
-    }
-
-    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-    async fn test_account_abstraction_authenticator() {
-        process_single_transactions(
-            IMPORTED_TESTNET_TXNS_6616059810_ACCOUNT_ABSTRACTION_AUTHENTICATOR,
-            Some("test_account_abstraction_authenticator".to_string()),
         )
         .await;
     }

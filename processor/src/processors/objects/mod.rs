@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 pub mod objects_extractor;
 pub mod objects_processor;
@@ -16,9 +16,9 @@ use crate::{
     },
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::transaction::v1::{write_set_change::Change, Transaction},
+use cedra_indexer_processor_sdk::{
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp,
+    cedra_protos::transaction::v1::{write_set_change::Change, Transaction},
     postgres::utils::database::DbContext,
     utils::convert::standardize_address,
 };
@@ -53,12 +53,12 @@ pub async fn process_objects(
                 {
                     // Object core is the first struct that we need to get
                     object_metadata_helper.insert(address.clone(), ObjectAggregatedData {
-                        object: Some(object_with_metadata),
+                        object: object_with_metadata,
                         token: None,
                         fungible_asset_store: None,
                         // The following structs are unused in this processor
                         fungible_asset_metadata: None,
-                        aptos_collection: None,
+                        cedra_collection: None,
                         fixed_supply: None,
                         unlimited_supply: None,
                         concurrent_supply: None,

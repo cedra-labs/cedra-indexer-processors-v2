@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -6,9 +6,9 @@
 
 use crate::processors::default::models::move_resources::MoveResource;
 use anyhow::Context;
-use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp_secs,
-    aptos_protos::transaction::v1::{Event, WriteResource},
+use cedra_indexer_processor_sdk::{
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp_secs,
+    cedra_protos::transaction::v1::{Event, WriteResource},
     utils::convert::{
         bigdecimal_to_u64, deserialize_from_string, standardize_address, truncate_str,
     },
@@ -33,7 +33,7 @@ impl OptionalString {
     }
 }
 
-// TODO: There is duplicated struct defined (https://github.com/aptos-labs/aptos-indexer-processors/blob/22f92fc3d7c8269cf16714eee9e86c6054d99b10/rust/processor/src/db/postgres/models/fungible_asset_models/v2_fungible_asset_utils.rs#L107)
+// TODO: There is duplicated struct defined (https://github.com/cedra-labs/cedra-indexer-processors/blob/22f92fc3d7c8269cf16714eee9e86c6054d99b10/rust/processor/src/db/postgres/models/fungible_asset_models/v2_fungible_asset_utils.rs#L107)
 // Remove this or the other one
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct OptionalBigDecimal {

@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -13,9 +13,9 @@ use crate::{
     utils::counters::PROCESSOR_UNKNOWN_TYPE_COUNT,
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::{
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp,
+    cedra_protos::transaction::v1::{
         transaction::TxnData, write_set_change::Change, Transaction, WriteResource, WriteTableItem,
     },
     utils::convert::standardize_address,

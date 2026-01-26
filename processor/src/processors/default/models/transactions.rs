@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -11,8 +11,8 @@ use crate::{
     utils::counters::PROCESSOR_UNKNOWN_TYPE_COUNT,
 };
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::{
         transaction::{TransactionType, TxnData},
         Transaction as TransactionPB, TransactionInfo, TransactionSizeInfo,
     },
@@ -303,30 +303,22 @@ impl Transaction {
                     wsc_detail,
                 )
             },
-            TxnData::BlockEpilogue(_) => {
-                let (wsc, wsc_detail) = WriteSetChangeModel::from_write_set_changes(
-                    &transaction_info.changes,
+            TxnData::BlockEpilogue(_) => (
+                Self::from_transaction_info_with_data(
+                    transaction_info,
+                    None,
+                    None,
                     txn_version,
+                    transaction_type,
+                    0,
                     block_height,
+                    epoch,
                     block_timestamp,
-                );
-                (
-                    Self::from_transaction_info_with_data(
-                        transaction_info,
-                        None,
-                        None,
-                        txn_version,
-                        transaction_type,
-                        0,
-                        block_height,
-                        epoch,
-                        block_timestamp,
-                        txn_size_info,
-                    ),
-                    wsc,
-                    wsc_detail,
-                )
-            },
+                    txn_size_info,
+                ),
+                vec![],
+                vec![],
+            ),
         }
     }
 

@@ -16,14 +16,17 @@ use crate::{
     },
     processors::fungible_asset::fungible_asset_models::{
         v2_fungible_asset_activities::ParquetFungibleAssetActivity,
-        v2_fungible_asset_balances::ParquetFungibleAssetBalance,
+        v2_fungible_asset_balances::{
+            ParquetCurrentFungibleAssetBalance, ParquetCurrentUnifiedFungibleAssetBalance,
+            ParquetFungibleAssetBalance,
+        },
         v2_fungible_asset_to_coin_mappings::ParquetFungibleAssetToCoinMapping,
         v2_fungible_metadata::ParquetFungibleAssetMetadataModel,
     },
     MIGRATIONS,
 };
-use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::TransactionStreamConfig,
+use cedra_indexer_processor_sdk::{
+    cedra_indexer_transaction_stream::TransactionStreamConfig,
     builder::ProcessorBuilder,
     common_steps::{TransactionStreamStep, DEFAULT_UPDATE_PROCESSOR_STATUS_SECS},
     postgres::utils::{
@@ -128,6 +131,14 @@ impl ProcessorTrait for ParquetFungibleAssetProcessor {
             (
                 ParquetTypeEnum::FungibleAssetBalances,
                 ParquetFungibleAssetBalance::schema(),
+            ),
+            (
+                ParquetTypeEnum::CurrentFungibleAssetBalancesLegacy,
+                ParquetCurrentFungibleAssetBalance::schema(),
+            ),
+            (
+                ParquetTypeEnum::CurrentFungibleAssetBalances,
+                ParquetCurrentUnifiedFungibleAssetBalance::schema(),
             ),
             (
                 ParquetTypeEnum::FungibleAssetToCoinMappings,

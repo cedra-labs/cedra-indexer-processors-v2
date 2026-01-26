@@ -1,7 +1,7 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::cedra_protos::transaction::v1::{
     any_signature::{SignatureVariant, Type as AnySignatureTypeEnum},
     AnySignature,
 };

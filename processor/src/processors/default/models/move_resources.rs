@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 #![allow(clippy::extra_unused_lifetimes)]
@@ -6,8 +6,8 @@
 use crate::parquet_processors::parquet_utils::util::{HasVersion, NamedTable};
 use allocative_derive::Allocative;
 use anyhow::{Context, Result};
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::{
         DeleteResource, MoveStructTag as MoveStructTagPB, WriteResource,
     },
     utils::convert::standardize_address,

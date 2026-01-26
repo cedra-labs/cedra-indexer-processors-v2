@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -13,14 +13,14 @@ use crate::{
             FungibleAssetStore, FungibleAssetSupply,
         },
         token_v2::token_v2_models::v2_token_utils::{
-            AptosCollection, ConcurrentSupply, FixedSupply, PropertyMapModel, TokenIdentifiers,
+            CedraCollection, ConcurrentSupply, FixedSupply, PropertyMapModel, TokenIdentifiers,
             TokenV2, TransferEvent, UnlimitedSupply,
         },
     },
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::WriteResource,
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::WriteResource,
     utils::convert::{deserialize_from_string, standardize_address},
 };
 use bigdecimal::BigDecimal;
@@ -35,10 +35,9 @@ pub type ObjectAggregatedDataMapping = AHashMap<CurrentObjectPK, ObjectAggregate
 pub type EventIndex = i64;
 
 /// This contains metadata for the object. This only includes fungible asset and token v2 metadata for now.
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ObjectAggregatedData {
-    // Unfortunately, there are cases where the ObjectCore is not present in the write resource, so we need to handle this case
-    pub object: Option<ObjectWithMetadata>,
+    pub object: ObjectWithMetadata,
     // There could be more than one transfers on the same transaction
     pub transfer_events: Vec<(EventIndex, TransferEvent)>,
     // This would make transfers impossible
@@ -50,7 +49,7 @@ pub struct ObjectAggregatedData {
     pub fungible_asset_store: Option<FungibleAssetStore>,
     pub concurrent_fungible_asset_balance: Option<ConcurrentFungibleAssetBalance>,
     // Token v2 structs
-    pub aptos_collection: Option<AptosCollection>,
+    pub cedra_collection: Option<CedraCollection>,
     pub fixed_supply: Option<FixedSupply>,
     pub property_map: Option<PropertyMapModel>,
     pub token: Option<TokenV2>,
@@ -59,11 +58,32 @@ pub struct ObjectAggregatedData {
     pub token_identifier: Option<TokenIdentifiers>,
 }
 
-impl ObjectAggregatedData {
-    pub fn get_owner_address(&self) -> Option<String> {
-        self.object
-            .as_ref()
-            .map(|object| object.object_core.get_owner_address())
+impl Default for ObjectAggregatedData {
+    fn default() -> Self {
+        Self {
+            object: ObjectWithMetadata {
+                object_core: ObjectCore {
+                    allow_ungated_transfer: false,
+                    guid_creation_num: BigDecimal::default(),
+                    owner: String::default(),
+                },
+                state_key_hash: String::default(),
+            },
+            transfer_events: Vec::new(),
+            untransferable: None,
+            fungible_asset_metadata: None,
+            fungible_asset_supply: None,
+            concurrent_fungible_asset_supply: None,
+            concurrent_fungible_asset_balance: None,
+            fungible_asset_store: None,
+            cedra_collection: None,
+            fixed_supply: None,
+            property_map: None,
+            token: None,
+            unlimited_supply: None,
+            concurrent_supply: None,
+            token_identifier: None,
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -6,7 +6,7 @@
 
 use crate::db::resources::TOKEN_ADDR;
 use anyhow::{Context, Result};
-use aptos_indexer_processor_sdk::utils::{
+use cedra_indexer_processor_sdk::utils::{
     convert::{
         deserialize_from_string, deserialize_string_from_hexstring, standardize_address,
         truncate_str,
@@ -19,8 +19,6 @@ use std::fmt::{self, Formatter};
 
 pub const NAME_LENGTH: usize = 128;
 pub const URI_LENGTH: usize = 512;
-
-pub const V1_TOKEN_STORE_TABLE_TYPE: &str = "0x3::token::TokenStore";
 
 /**
  * This file defines deserialized move types as defined in our 0x3 contracts.

@@ -19,8 +19,8 @@ use crate::{
     },
     MIGRATIONS,
 };
-use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::TransactionStreamConfig,
+use cedra_indexer_processor_sdk::{
+    cedra_indexer_transaction_stream::TransactionStreamConfig,
     builder::ProcessorBuilder,
     common_steps::{TransactionStreamStep, DEFAULT_UPDATE_PROCESSOR_STATUS_SECS},
     postgres::utils::{

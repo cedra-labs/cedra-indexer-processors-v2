@@ -1,8 +1,8 @@
 #!/usr/bin/env -S node
 
 
-// This script releases indexer processor images to docker hub https://github.com/aptos-labs/aptos-indexer-processors.
-// It does so by copying the images from aptos GCP artifact registry to docker hub.
+// This script releases indexer processor images to docker hub https://github.com/cedra-labs/cedra-indexer-processors.
+// It does so by copying the images from cedra GCP artifact registry to docker hub.
 
 // Usually it's run in CI, but you can also run it locally in emergency situations, assuming you have the right credentials.
 // Before you run this locally, check one more time whether you can trigger a CI build instead which is usually easier and safer.
@@ -18,7 +18,7 @@
 //  - node (node.js)
 //  - crane - https://github.com/google/go-containerregistry/tree/main/cmd/crane#installation
 //  - pnpm - https://pnpm.io/installation
-// 2. docker login - with authorization to push to the `aptoslabs` org
+// 2. docker login - with authorization to push to the `cedralabs` org
 // 3. gcloud auth configure-docker us-west1-docker.pkg.dev
 // 4. gcloud auth login --update-adc
 //
@@ -89,7 +89,7 @@ function getImage(language) {
 }
 
 const GCP_DOCKER_ARTIFACT_REPO = parsedArgs.GCP_DOCKER_ARTIFACT_REPO;
-const DOCKERHUB = "docker.io/aptoslabs";
+const DOCKERHUB = "docker.io/cedralabs";
 
 const {sourceImage, targetImage} = getImage(parsedArgs.LANGUAGE);
 console.info(chalk.yellow(`INFO: Target image: ${targetImage}`));

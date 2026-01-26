@@ -1,23 +1,26 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
     config::processor_config::DefaultProcessorConfig,
     filter_datasets,
-    processors::fungible_asset::fungible_asset_models::{
-        v2_fungible_asset_activities::PostgresFungibleAssetActivity,
-        v2_fungible_asset_balances::{
-            PostgresCurrentUnifiedFungibleAssetBalance, PostgresFungibleAssetBalance,
+    processors::fungible_asset::{
+        coin_models::coin_supply::CoinSupply,
+        fungible_asset_models::{
+            v2_fungible_asset_activities::PostgresFungibleAssetActivity,
+            v2_fungible_asset_balances::{
+                PostgresCurrentUnifiedFungibleAssetBalance, PostgresFungibleAssetBalance,
+            },
+            v2_fungible_asset_to_coin_mappings::PostgresFungibleAssetToCoinMapping,
+            v2_fungible_metadata::PostgresFungibleAssetMetadataModel,
         },
-        v2_fungible_asset_to_coin_mappings::PostgresFungibleAssetToCoinMapping,
-        v2_fungible_metadata::PostgresFungibleAssetMetadataModel,
     },
     schema,
     utils::table_flags::{filter_data, TableFlags},
 };
 use ahash::AHashMap;
 use anyhow::Result;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     postgres::utils::database::{execute_in_chunks, get_config_table_chunk_size, ArcDbPool},
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},
     types::transaction_context::TransactionContext,
@@ -66,6 +69,7 @@ impl Processable for FungibleAssetStorer {
             Vec<PostgresCurrentUnifiedFungibleAssetBalance>,
             Vec<PostgresCurrentUnifiedFungibleAssetBalance>,
         ),
+        Vec<CoinSupply>,
         Vec<PostgresFungibleAssetToCoinMapping>,
     );
     type Output = ();
@@ -81,14 +85,16 @@ impl Processable for FungibleAssetStorer {
                 Vec<PostgresCurrentUnifiedFungibleAssetBalance>,
                 Vec<PostgresCurrentUnifiedFungibleAssetBalance>,
             ),
+            Vec<CoinSupply>,
             Vec<PostgresFungibleAssetToCoinMapping>,
         )>,
     ) -> Result<Option<TransactionContext<Self::Output>>, ProcessorError> {
         let (
             fungible_asset_activities,
             fungible_asset_metadata,
-            _,
+            _fungible_asset_balances, // TODO: remove this from parsing logic
             (current_unified_fab_v1, current_unified_fab_v2),
+            _coin_supply, // TODO: remove this from parsing logic
             fa_to_coin_mappings,
         ) = input.data;
 
@@ -195,11 +201,7 @@ pub fn insert_fungible_asset_activities_query(
         .values(items_to_insert)
         .on_conflict((transaction_version, event_index))
         .do_update()
-        .set((
-            storage_id.eq(excluded(storage_id)),
-            owner_address.eq(excluded(owner_address)),
-            asset_type.eq(excluded(asset_type)),
-        ))
+        .set(storage_id.eq(excluded(storage_id)))
 }
 
 pub fn insert_fungible_asset_metadata_query(

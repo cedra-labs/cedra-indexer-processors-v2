@@ -1,5 +1,5 @@
 -- Your SQL goes here
-CREATE OR REPLACE VIEW current_aptos_names AS
+CREATE OR REPLACE VIEW current_cedra_names AS
 SELECT cal.domain,
   cal.subdomain,
   cal.token_name,

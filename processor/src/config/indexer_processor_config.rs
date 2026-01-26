@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use super::{
@@ -21,6 +21,7 @@ use crate::{
         account_restoration::account_restoration_processor::AccountRestorationProcessor,
         account_transactions::account_transactions_processor::AccountTransactionsProcessor,
         ans::ans_processor::AnsProcessor, default::default_processor::DefaultProcessor,
+        events::events_processor::EventsProcessor,
         fungible_asset::fungible_asset_processor::FungibleAssetProcessor,
         gas_fees::gas_fee_processor::GasFeeProcessor,
         monitoring::monitoring_processor::MonitoringProcessor,
@@ -30,8 +31,8 @@ use crate::{
     },
 };
 use anyhow::Result;
-use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::TransactionStreamConfig, server_framework::RunnableConfig,
+use cedra_indexer_processor_sdk::{
+    cedra_indexer_transaction_stream::TransactionStreamConfig, server_framework::RunnableConfig,
     traits::processor_trait::ProcessorTrait,
 };
 use serde::{Deserialize, Serialize};
@@ -67,6 +68,10 @@ impl RunnableConfig for IndexerProcessorConfig {
             ProcessorConfig::DefaultProcessor(_) => {
                 let default_processor = DefaultProcessor::new(self.clone()).await?;
                 default_processor.run_processor().await
+            },
+            ProcessorConfig::EventsProcessor(_) => {
+                let events_processor = EventsProcessor::new(self.clone()).await?;
+                events_processor.run_processor().await
             },
             ProcessorConfig::FungibleAssetProcessor(_) => {
                 let fungible_asset_processor = FungibleAssetProcessor::new(self.clone()).await?;

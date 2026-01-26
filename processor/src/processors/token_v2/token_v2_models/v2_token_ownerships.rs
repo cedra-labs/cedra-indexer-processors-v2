@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -6,15 +6,12 @@
 #![allow(clippy::unused_unit)]
 
 use crate::{
-    db::resources::{FromWriteResource, BURN_ADDR},
+    db::resources::FromWriteResource,
     parquet_processors::parquet_utils::util::{HasVersion, NamedTable},
     processors::{
         objects::v2_object_utils::{ObjectAggregatedDataMapping, ObjectWithMetadata},
         token_v2::{
-            token_models::{
-                token_utils::{TokenWriteSet, V1_TOKEN_STORE_TABLE_TYPE},
-                tokens::{TableHandleToOwner, TokenV1AggregatedEventsMapping},
-            },
+            token_models::{token_utils::TokenWriteSet, tokens::TableHandleToOwner},
             token_v2_models::{
                 v2_token_datas::TokenDataV2,
                 v2_token_utils::{
@@ -28,8 +25,8 @@ use crate::{
 use ahash::AHashMap;
 use allocative_derive::Allocative;
 use anyhow::Context;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::{
         DeleteResource, DeleteTableItem, WriteResource, WriteTableItem,
     },
     postgres::utils::database::{DbContext, DbPoolConnection},
@@ -140,27 +137,20 @@ impl TokenOwnershipV2 {
         let object_data = object_metadatas
             .get(&token_data.token_data_id)
             .context("If token data exists objectcore must exist")?;
+        let object_core = object_data.object.object_core.clone();
         let token_data_id = token_data.token_data_id.clone();
-        let allow_ungated_transfer = object_data
-            .object
-            .as_ref()
-            .map(|object| object.object_core.allow_ungated_transfer);
-        // If there is no ObjectCore resource, then use 0x0 as the owner
-        let owner_address = object_data
-            .get_owner_address()
-            .unwrap_or(String::from(BURN_ADDR));
+        let owner_address = object_core.get_owner_address();
         let storage_id = token_data_id.clone();
 
         // is_soulbound currently means if an object is completely untransferrable
         // OR if only admin can transfer. Only the former is true soulbound but
         // people might already be using it with the latter meaning so let's include both.
         let is_soulbound = if object_data.untransferable.as_ref().is_some() {
-            Some(true)
+            true
         } else {
-            allow_ungated_transfer.map(|allow_ungated_transfer| !allow_ungated_transfer)
+            !object_core.allow_ungated_transfer
         };
-        let non_transferrable_by_owner =
-            allow_ungated_transfer.map(|allow_ungated_transfer| !allow_ungated_transfer);
+        let non_transferrable_by_owner = !object_core.allow_ungated_transfer;
 
         ownerships.push(Self {
             transaction_version: token_data.transaction_version,
@@ -172,11 +162,11 @@ impl TokenOwnershipV2 {
             amount: BigDecimal::one(),
             table_type_v1: None,
             token_properties_mutated_v1: None,
-            is_soulbound_v2: is_soulbound,
+            is_soulbound_v2: Some(is_soulbound),
             token_standard: TokenStandard::V2.to_string(),
             is_fungible_v2: None,
             transaction_timestamp: token_data.transaction_timestamp,
-            non_transferrable_by_owner,
+            non_transferrable_by_owner: Some(non_transferrable_by_owner),
         });
         current_ownerships.insert(
             (
@@ -193,12 +183,12 @@ impl TokenOwnershipV2 {
                 amount: BigDecimal::one(),
                 table_type_v1: None,
                 token_properties_mutated_v1: None,
-                is_soulbound_v2: is_soulbound,
+                is_soulbound_v2: Some(is_soulbound),
                 token_standard: TokenStandard::V2.to_string(),
                 is_fungible_v2: None,
                 last_transaction_version: token_data.transaction_version,
                 last_transaction_timestamp: token_data.transaction_timestamp,
-                non_transferrable_by_owner,
+                non_transferrable_by_owner: Some(non_transferrable_by_owner),
             },
         );
 
@@ -221,11 +211,11 @@ impl TokenOwnershipV2 {
                 amount: BigDecimal::zero(),
                 table_type_v1: None,
                 token_properties_mutated_v1: None,
-                is_soulbound_v2: is_soulbound,
+                is_soulbound_v2: Some(is_soulbound),
                 token_standard: TokenStandard::V2.to_string(),
                 is_fungible_v2: None,
                 transaction_timestamp: token_data.transaction_timestamp,
-                non_transferrable_by_owner,
+                non_transferrable_by_owner: Some(is_soulbound),
             });
             current_ownerships.insert(
                 (
@@ -244,12 +234,12 @@ impl TokenOwnershipV2 {
                     amount: BigDecimal::zero(),
                     table_type_v1: None,
                     token_properties_mutated_v1: None,
-                    is_soulbound_v2: is_soulbound,
+                    is_soulbound_v2: Some(is_soulbound),
                     token_standard: TokenStandard::V2.to_string(),
                     is_fungible_v2: None,
                     last_transaction_version: token_data.transaction_version,
                     last_transaction_timestamp: token_data.transaction_timestamp,
-                    non_transferrable_by_owner,
+                    non_transferrable_by_owner: Some(is_soulbound),
                 },
             );
         }
@@ -405,7 +395,7 @@ impl TokenOwnershipV2 {
                                 {
                                     Ok(nft) => nft.owner_address.clone(),
                                     Err(_) => {
-                                        tracing::warn!(
+                                        tracing::error!(
                                     transaction_version = txn_version,
                                     lookup_key = &token_address,
                                     "Failed to find current_token_ownership_v2 for burned token. You probably should backfill db."
@@ -466,7 +456,6 @@ impl TokenOwnershipV2 {
         write_set_change_index: i64,
         txn_timestamp: chrono::NaiveDateTime,
         table_handle_to_owner: &TableHandleToOwner,
-        token_v1_aggregated_events: &TokenV1AggregatedEventsMapping,
     ) -> anyhow::Result<Option<(Self, Option<CurrentTokenOwnershipV2>)>> {
         let table_item_data = table_item.data.as_ref().unwrap();
 
@@ -486,70 +475,54 @@ impl TokenOwnershipV2 {
             let token_data_id_struct = token_id_struct.token_data_id;
             let token_data_id = token_data_id_struct.to_id();
 
-            // Try to get owner from table_handle_to_owner (uses v1 events). If that doesn't exist, try to get owner
-            // from token_v1_aggregated_events (uses module v2 events).
-            let owner_address = match table_handle_to_owner.get(&table_handle) {
-                Some(tm) if tm.table_type == V1_TOKEN_STORE_TABLE_TYPE => {
-                    Some(tm.get_owner_address())
+            let maybe_table_metadata = table_handle_to_owner.get(&table_handle);
+            let (curr_token_ownership, owner_address, table_type) = match maybe_table_metadata {
+                Some(tm) => {
+                    if tm.table_type != "0x3::token::TokenStore" {
+                        return Ok(None);
+                    }
+                    let owner_address = tm.get_owner_address();
+                    (
+                        Some(CurrentTokenOwnershipV2 {
+                            token_data_id: token_data_id.clone(),
+                            property_version_v1: token_id_struct.property_version.clone(),
+                            owner_address: owner_address.clone(),
+                            storage_id: table_handle.clone(),
+                            amount: amount.clone(),
+                            table_type_v1: Some(tm.table_type.clone()),
+                            token_properties_mutated_v1: Some(token.token_properties.clone()),
+                            is_soulbound_v2: None,
+                            token_standard: TokenStandard::V1.to_string(),
+                            is_fungible_v2: None,
+                            last_transaction_version: txn_version,
+                            last_transaction_timestamp: txn_timestamp,
+                            non_transferrable_by_owner: None,
+                        }),
+                        Some(owner_address),
+                        Some(tm.table_type.clone()),
+                    )
                 },
-                _ => token_v1_aggregated_events
-                    .get(&token_data_id)
-                    .and_then(|events| events.deposit_module_events.as_slice().last())
-                    .and_then(|e| e.to_address.clone()),
-            };
-
-            let owner_address = match owner_address {
-                Some(addr) => addr,
-                None => {
-                    // For token v1 offers, the token is withdrawn from the owner's account and moved
-                    // into another table item. The token appears as unowned in current_token_ownerships
-                    // but it will show up in the current_token_pending_claims table.
-                    tracing::warn!(
-                        transaction_version = txn_version,
-                        table_handle = table_handle,
-                        token_data_id = token_data_id,
-                        "Missing table handle metadata and deposit module event for token. \
-                            table_handle_to_owner: {:?}, \
-                            token_v1_aggregated_events: {:?}",
-                        table_handle_to_owner,
-                        token_v1_aggregated_events,
-                    );
-                    return Ok(None);
-                },
+                None => (None, None, None),
             };
 
             Ok(Some((
                 Self {
                     transaction_version: txn_version,
                     write_set_change_index,
-                    token_data_id: token_data_id.clone(),
-                    property_version_v1: token_id_struct.property_version.clone(),
-                    owner_address: Some(owner_address.clone()),
-                    storage_id: table_handle.clone(),
-                    amount: amount.clone(),
-                    table_type_v1: Some(V1_TOKEN_STORE_TABLE_TYPE.to_string()),
-                    token_properties_mutated_v1: Some(token.token_properties.clone()),
+                    token_data_id,
+                    property_version_v1: token_id_struct.property_version,
+                    owner_address,
+                    storage_id: table_handle,
+                    amount,
+                    table_type_v1: table_type,
+                    token_properties_mutated_v1: Some(token.token_properties),
                     is_soulbound_v2: None,
                     token_standard: TokenStandard::V1.to_string(),
                     is_fungible_v2: None,
                     transaction_timestamp: txn_timestamp,
                     non_transferrable_by_owner: None,
                 },
-                Some(CurrentTokenOwnershipV2 {
-                    token_data_id,
-                    property_version_v1: token_id_struct.property_version,
-                    owner_address,
-                    storage_id: table_handle,
-                    amount,
-                    table_type_v1: Some(V1_TOKEN_STORE_TABLE_TYPE.to_string()),
-                    token_properties_mutated_v1: Some(token.token_properties),
-                    is_soulbound_v2: None,
-                    token_standard: TokenStandard::V1.to_string(),
-                    is_fungible_v2: None,
-                    last_transaction_version: txn_version,
-                    last_transaction_timestamp: txn_timestamp,
-                    non_transferrable_by_owner: None,
-                }),
+                curr_token_ownership,
             )))
         } else {
             Ok(None)
@@ -563,7 +536,6 @@ impl TokenOwnershipV2 {
         write_set_change_index: i64,
         txn_timestamp: chrono::NaiveDateTime,
         table_handle_to_owner: &TableHandleToOwner,
-        token_v1_aggregated_events: &TokenV1AggregatedEventsMapping,
     ) -> anyhow::Result<Option<(Self, Option<CurrentTokenOwnershipV2>)>> {
         let table_item_data = table_item.data.as_ref().unwrap();
 
@@ -581,44 +553,46 @@ impl TokenOwnershipV2 {
             let token_data_id_struct = token_id_struct.token_data_id;
             let token_data_id = token_data_id_struct.to_id();
 
-            // Try to get owner from table_handle_to_owner (uses v1 events). If that doesn't exist, try to get owner
-            // from token_v1_aggregated_events (uses module v2 events).
-            let owner_address = match table_handle_to_owner.get(&table_handle) {
-                Some(tm) if tm.table_type == V1_TOKEN_STORE_TABLE_TYPE => {
-                    Some(tm.get_owner_address())
+            let maybe_table_metadata = table_handle_to_owner.get(&table_handle);
+            let (curr_token_ownership, owner_address, table_type) = match maybe_table_metadata {
+                Some(tm) => {
+                    if tm.table_type != "0x3::token::TokenStore" {
+                        return Ok(None);
+                    }
+                    let owner_address = tm.get_owner_address();
+                    (
+                        Some(CurrentTokenOwnershipV2 {
+                            token_data_id: token_data_id.clone(),
+                            property_version_v1: token_id_struct.property_version.clone(),
+                            owner_address: owner_address.clone(),
+                            storage_id: table_handle.clone(),
+                            amount: BigDecimal::zero(),
+                            table_type_v1: Some(tm.table_type.clone()),
+                            token_properties_mutated_v1: None,
+                            is_soulbound_v2: None,
+                            token_standard: TokenStandard::V1.to_string(),
+                            is_fungible_v2: None,
+                            last_transaction_version: txn_version,
+                            last_transaction_timestamp: txn_timestamp,
+                            non_transferrable_by_owner: None,
+                        }),
+                        Some(owner_address),
+                        Some(tm.table_type.clone()),
+                    )
                 },
-                _ => token_v1_aggregated_events
-                    .get(&token_data_id)
-                    .and_then(|events| events.withdraw_module_events.as_slice().first())
-                    .and_then(|e| e.from_address.clone()),
-            };
-            let owner_address = match owner_address {
-                Some(addr) => addr,
-                None => {
-                    tracing::warn!(
-                        transaction_version = txn_version,
-                        table_handle = table_handle,
-                        token_data_id = token_data_id,
-                        "Missing table handle metadata and withdraw module event for token. \
-                            table_handle_to_owner: {:?}, \
-                            token_v1_aggregated_events: {:?}",
-                        table_handle_to_owner,
-                        token_v1_aggregated_events,
-                    );
-                    return Ok(None);
-                },
+                None => (None, None, None),
             };
 
             Ok(Some((
                 Self {
                     transaction_version: txn_version,
                     write_set_change_index,
-                    token_data_id: token_data_id.clone(),
-                    property_version_v1: token_id_struct.property_version.clone(),
-                    owner_address: Some(owner_address.clone()),
-                    storage_id: table_handle.clone(),
+                    token_data_id,
+                    property_version_v1: token_id_struct.property_version,
+                    owner_address,
+                    storage_id: table_handle,
                     amount: BigDecimal::zero(),
-                    table_type_v1: Some(V1_TOKEN_STORE_TABLE_TYPE.to_string()),
+                    table_type_v1: table_type,
                     token_properties_mutated_v1: None,
                     is_soulbound_v2: None,
                     token_standard: TokenStandard::V1.to_string(),
@@ -626,21 +600,7 @@ impl TokenOwnershipV2 {
                     transaction_timestamp: txn_timestamp,
                     non_transferrable_by_owner: None,
                 },
-                Some(CurrentTokenOwnershipV2 {
-                    token_data_id,
-                    property_version_v1: token_id_struct.property_version,
-                    owner_address,
-                    storage_id: table_handle,
-                    amount: BigDecimal::zero(),
-                    table_type_v1: Some(V1_TOKEN_STORE_TABLE_TYPE.to_string()),
-                    token_properties_mutated_v1: None,
-                    is_soulbound_v2: None,
-                    token_standard: TokenStandard::V1.to_string(),
-                    is_fungible_v2: None,
-                    last_transaction_version: txn_version,
-                    last_transaction_timestamp: txn_timestamp,
-                    non_transferrable_by_owner: None,
-                }),
+                curr_token_ownership,
             )))
         } else {
             Ok(None)

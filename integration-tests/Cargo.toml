@@ -4,19 +4,19 @@ description = "Indexer GRPC processor integration tests."
 version = "1.0.0"
 
 # Workspace inherited keys
-authors = ["Aptos Labs <opensource@aptoslabs.com>"]
+authors = ["Cedra Labs <opensource@cedralabs.com>"]
 edition = "2021"
-homepage = "https://aptoslabs.com"
+homepage = "https://cedralabs.com"
 license = "Apache-2.0"
 publish = false
-repository = "https://github.com/aptos-labs/aptos-core"
+repository = "https://github.com/cedra-labs/cedra-core"
 rust-version = { workspace = true }
 
 [dependencies]
 ahash = { workspace = true }
 anyhow = { workspace = true }
-aptos-indexer-processor-sdk = { workspace = true }
-aptos-indexer-test-transactions = { workspace = true }
+cedra-indexer-processor-sdk = { workspace = true }
+cedra-indexer-test-transactions = { workspace = true }
 assert-json-diff = { workspace = true }
 bigdecimal = { workspace = true }
 chrono = { workspace = true }
@@ -29,7 +29,7 @@ tokio = { workspace = true }
 
 [dev-dependencies]
 ahash = { workspace = true }
-aptos-indexer-processor-sdk = { workspace = true, features = [
+cedra-indexer-processor-sdk = { workspace = true, features = [
     "testing_framework",
 ] }
 futures = { workspace = true }

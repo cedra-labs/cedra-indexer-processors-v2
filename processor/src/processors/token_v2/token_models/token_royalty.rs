@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -11,7 +11,7 @@ use crate::{
     schema::current_token_royalty_v1,
 };
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::WriteTableItem;
+use cedra_indexer_processor_sdk::cedra_protos::transaction::v1::WriteTableItem;
 use bigdecimal::BigDecimal;
 use field_count::FieldCount;
 use parquet_derive::ParquetRecordWriter;

@@ -1,6 +1,6 @@
 -- This file should undo anything in `up.sql`
-DROP VIEW IF EXISTS current_aptos_names;
-CREATE OR REPLACE VIEW current_aptos_names AS
+DROP VIEW IF EXISTS current_cedra_names;
+CREATE OR REPLACE VIEW current_cedra_names AS
 SELECT cal.domain,
   cal.subdomain,
   cal.token_name,

@@ -1,7 +1,6 @@
 use crate::{
     config::db_config::DbConfig,
     parquet_processors::{
-        parquet_events::parquet_events_model::ParquetEvent,
         parquet_transaction_metadata::transaction_metadata_models::write_set_size_info::ParquetWriteSetSize,
         parquet_utils::{
             gcs_uploader::{create_new_writer, GCSUploader},
@@ -22,9 +21,13 @@ use crate::{
             transactions::ParquetTransaction,
             write_set_changes::ParquetWriteSetChange,
         },
+        events::events_model::ParquetEvent,
         fungible_asset::fungible_asset_models::{
             v2_fungible_asset_activities::ParquetFungibleAssetActivity,
-            v2_fungible_asset_balances::ParquetFungibleAssetBalance,
+            v2_fungible_asset_balances::{
+                ParquetCurrentFungibleAssetBalance, ParquetCurrentUnifiedFungibleAssetBalance,
+                ParquetFungibleAssetBalance,
+            },
             v2_fungible_asset_to_coin_mappings::ParquetFungibleAssetToCoinMapping,
             v2_fungible_metadata::ParquetFungibleAssetMetadataModel,
         },
@@ -53,7 +56,7 @@ use crate::{
     },
     utils::table_flags::TableFlags,
 };
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     postgres::utils::database::{new_db_pool, ArcDbPool},
     utils::errors::ProcessorError,
 };
@@ -130,6 +133,8 @@ pub enum ParquetTypeEnum {
     FungibleAssetActivities,
     FungibleAssetMetadata,
     FungibleAssetBalances,
+    CurrentFungibleAssetBalances,
+    CurrentFungibleAssetBalancesLegacy,
     FungibleAssetToCoinMappings,
     // txn metadata,
     WriteSetSize,
@@ -235,6 +240,14 @@ impl_parquet_trait!(
     ParquetTypeEnum::FungibleAssetBalances
 );
 impl_parquet_trait!(
+    ParquetCurrentUnifiedFungibleAssetBalance,
+    ParquetTypeEnum::CurrentFungibleAssetBalances
+);
+impl_parquet_trait!(
+    ParquetCurrentFungibleAssetBalance,
+    ParquetTypeEnum::CurrentFungibleAssetBalancesLegacy
+);
+impl_parquet_trait!(
     ParquetFungibleAssetToCoinMapping,
     ParquetTypeEnum::FungibleAssetToCoinMappings
 );
@@ -307,6 +320,8 @@ pub enum ParquetTypeStructs {
     FungibleAssetActivity(Vec<ParquetFungibleAssetActivity>),
     FungibleAssetMetadata(Vec<ParquetFungibleAssetMetadataModel>),
     FungibleAssetBalance(Vec<ParquetFungibleAssetBalance>),
+    CurrentFungibleAssetBalance(Vec<ParquetCurrentFungibleAssetBalance>),
+    CurrentUnifiedFungibleAssetBalance(Vec<ParquetCurrentUnifiedFungibleAssetBalance>),
     FungibleAssetToCoinMappings(Vec<ParquetFungibleAssetToCoinMapping>),
     // Txn metadata
     WriteSetSize(Vec<ParquetWriteSetSize>),
@@ -364,6 +379,12 @@ impl ParquetTypeStructs {
             },
             ParquetTypeEnum::FungibleAssetBalances => {
                 ParquetTypeStructs::FungibleAssetBalance(Vec::new())
+            },
+            ParquetTypeEnum::CurrentFungibleAssetBalancesLegacy => {
+                ParquetTypeStructs::CurrentFungibleAssetBalance(Vec::new())
+            },
+            ParquetTypeEnum::CurrentFungibleAssetBalances => {
+                ParquetTypeStructs::CurrentUnifiedFungibleAssetBalance(Vec::new())
             },
             ParquetTypeEnum::FungibleAssetToCoinMappings => {
                 ParquetTypeStructs::FungibleAssetToCoinMappings(Vec::new())
@@ -492,6 +513,18 @@ impl ParquetTypeStructs {
             (
                 ParquetTypeStructs::FungibleAssetBalance(self_data),
                 ParquetTypeStructs::FungibleAssetBalance(other_data),
+            ) => {
+                handle_append!(self_data, other_data)
+            },
+            (
+                ParquetTypeStructs::CurrentFungibleAssetBalance(self_data),
+                ParquetTypeStructs::CurrentFungibleAssetBalance(other_data),
+            ) => {
+                handle_append!(self_data, other_data)
+            },
+            (
+                ParquetTypeStructs::CurrentUnifiedFungibleAssetBalance(self_data),
+                ParquetTypeStructs::CurrentUnifiedFungibleAssetBalance(other_data),
             ) => {
                 handle_append!(self_data, other_data)
             },

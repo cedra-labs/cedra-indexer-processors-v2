@@ -1,5 +1,5 @@
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
+use cedra_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
 use processor::{
     config::{
         db_config::{DbConfig, PostgresConfig},
@@ -53,18 +53,17 @@ pub fn setup_stake_processor_config(
 #[cfg(test)]
 mod tests {
     use crate::{
-        diff_test_helper::stake_processor::load_data,
+        diff_test_helper::event_processor::load_data,
         sdk_tests::{
-            stake_processor_tests::setup_stake_processor_config,
-            test_helpers::{
-                run_processor_test, setup_test_environment, validate_json, DEFAULT_OUTPUT_FOLDER,
-            },
+            run_processor_test, setup_test_environment,
+            stake_processor_tests::setup_stake_processor_config, validate_json,
+            DEFAULT_OUTPUT_FOLDER,
         },
     };
-    use aptos_indexer_processor_sdk::testing_framework::{
+    use cedra_indexer_processor_sdk::testing_framework::{
         cli_parser::get_test_config, database::TestDatabase,
     };
-    use aptos_indexer_test_transactions::json_transactions::generated_transactions::{
+    use cedra_indexer_test_transactions::json_transactions::generated_transactions::{
         IMPORTED_MAINNET_TXNS_118489_PROPOSAL_VOTE,
         IMPORTED_MAINNET_TXNS_121508544_STAKE_DISTRIBUTE,
         IMPORTED_MAINNET_TXNS_139449359_STAKE_REACTIVATE,

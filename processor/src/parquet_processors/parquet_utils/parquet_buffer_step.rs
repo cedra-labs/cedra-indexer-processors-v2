@@ -5,7 +5,7 @@ use crate::{
     parquet_processors::{ParquetTypeEnum, ParquetTypeStructs},
 };
 use anyhow::Result;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     traits::{
         pollable_async_step::PollableAsyncRunType, NamedStep, PollableAsyncStep, Processable,
     },
@@ -295,7 +295,7 @@ mod tests {
         },
         processors::default::models::move_resources::ParquetMoveResource,
     };
-    use aptos_indexer_processor_sdk::{
+    use cedra_indexer_processor_sdk::{
         traits::Processable,
         types::transaction_context::{TransactionContext, TransactionMetadata},
     };

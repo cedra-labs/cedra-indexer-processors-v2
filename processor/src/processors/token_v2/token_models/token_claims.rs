@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -7,21 +7,26 @@
 
 use crate::{
     parquet_processors::parquet_utils::util::{HasVersion, NamedTable},
-    processors::token_v2::token_models::{
-        token_utils::TokenWriteSet,
-        tokens::{TableHandleToOwner, TokenV1AggregatedEventsMapping},
+    processors::token_v2::{
+        token_models::{token_utils::TokenWriteSet, tokens::TableHandleToOwner},
+        token_v2_models::v2_token_activities::TokenActivityHelperV1,
     },
     schema::current_token_pending_claims,
 };
+use ahash::AHashMap;
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{DeleteTableItem, WriteTableItem},
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::{DeleteTableItem, WriteTableItem},
     utils::convert::standardize_address,
 };
 use bigdecimal::{BigDecimal, ToPrimitive, Zero};
 use field_count::FieldCount;
 use parquet_derive::ParquetRecordWriter;
 use serde::{Deserialize, Serialize};
+
+// Map to keep track of the metadata of token offers that were claimed. The key is the token data id of the offer.
+// Potentially it'd also be useful to keep track of offers that were canceled.
+pub type TokenV1Claimed = AHashMap<String, TokenActivityHelperV1>;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct CurrentTokenPendingClaim {
@@ -65,7 +70,6 @@ impl CurrentTokenPendingClaim {
         txn_version: i64,
         txn_timestamp: chrono::NaiveDateTime,
         table_handle_to_owner: &TableHandleToOwner,
-        token_v1_aggregated_events: &TokenV1AggregatedEventsMapping,
     ) -> anyhow::Result<Option<Self>> {
         let table_item_data = table_item.data.as_ref().unwrap();
 
@@ -88,61 +92,45 @@ impl CurrentTokenPendingClaim {
             };
             if let Some(token) = &maybe_token {
                 let table_handle = standardize_address(&table_item.handle.to_string());
-                let token_id = offer.token_id.clone();
-                let token_data_id_struct = token_id.token_data_id;
-                let token_data_id = token_data_id_struct.to_id();
 
-                // Try to get owner from table_handle_to_owner (uses v1 events). If that doesn't exist, try to get owner
-                // from token_v1_aggregated_events (uses module v2 events).
-                let maybe_owner_address = match table_handle_to_owner.get(&table_handle) {
-                    Some(tm) => Some(tm.get_owner_address()),
-                    _ => token_v1_aggregated_events
-                        .get(&token_data_id)
-                        .and_then(|events| {
-                            events.withdraw_module_events.as_slice().first().cloned()
-                        })
-                        .and_then(|withdraw_event| withdraw_event.from_address.clone()),
-                };
-                let owner_address = match maybe_owner_address {
-                    Some(owner_address) => owner_address,
-                    _ => {
-                        tracing::warn!(
-                            transaction_version = txn_version,
-                            table_handle = table_handle,
-                            token_data_id = token_data_id,
-                            "Missing table handle metadata and withdraw event for TokenClaim. \
-                                table_handle_to_owner: {:?}, \
-                                token_v1_aggregated_events: {:?}",
-                            table_handle_to_owner,
-                            token_v1_aggregated_events,
-                        );
-                        return Ok(None);
-                    },
-                };
+                let maybe_table_metadata = table_handle_to_owner.get(&table_handle);
 
-                let token_data_id_hash = token_data_id_struct.to_hash();
-                let collection_data_id_hash = token_data_id_struct.get_collection_data_id_hash();
-                // Basically adding 0x prefix to the previous 2 lines. This is to be consistent with Token V2
-                let collection_id = token_data_id_struct.get_collection_id();
-                let collection_name = token_data_id_struct.get_collection_trunc();
-                let name = token_data_id_struct.get_name_trunc();
+                if let Some(table_metadata) = maybe_table_metadata {
+                    let token_id = offer.token_id.clone();
+                    let token_data_id_struct = token_id.token_data_id;
+                    let collection_data_id_hash =
+                        token_data_id_struct.get_collection_data_id_hash();
+                    let token_data_id_hash = token_data_id_struct.to_hash();
+                    // Basically adding 0x prefix to the previous 2 lines. This is to be consistent with Token V2
+                    let collection_id = token_data_id_struct.get_collection_id();
+                    let token_data_id = token_data_id_struct.to_id();
+                    let collection_name = token_data_id_struct.get_collection_trunc();
+                    let name = token_data_id_struct.get_name_trunc();
 
-                return Ok(Some(Self {
-                    token_data_id_hash,
-                    property_version: token_id.property_version,
-                    from_address: owner_address,
-                    to_address: offer.get_to_address(),
-                    collection_data_id_hash,
-                    creator_address: token_data_id_struct.get_creator_address(),
-                    collection_name,
-                    name,
-                    amount: token.amount.clone(),
-                    table_handle,
-                    last_transaction_version: txn_version,
-                    last_transaction_timestamp: txn_timestamp,
-                    token_data_id,
-                    collection_id,
-                }));
+                    return Ok(Some(Self {
+                        token_data_id_hash,
+                        property_version: token_id.property_version,
+                        from_address: table_metadata.get_owner_address(),
+                        to_address: offer.get_to_address(),
+                        collection_data_id_hash,
+                        creator_address: token_data_id_struct.get_creator_address(),
+                        collection_name,
+                        name,
+                        amount: token.amount.clone(),
+                        table_handle,
+                        last_transaction_version: txn_version,
+                        last_transaction_timestamp: txn_timestamp,
+                        token_data_id,
+                        collection_id,
+                    }));
+                } else {
+                    tracing::warn!(
+                        transaction_version = txn_version,
+                        table_handle = table_handle,
+                        "Missing table handle metadata for TokenClaim. {:?}",
+                        table_handle_to_owner
+                    );
+                }
             } else {
                 tracing::warn!(
                     transaction_version = txn_version,
@@ -160,7 +148,7 @@ impl CurrentTokenPendingClaim {
         txn_version: i64,
         txn_timestamp: chrono::NaiveDateTime,
         table_handle_to_owner: &TableHandleToOwner,
-        token_v1_aggregated_events: &TokenV1AggregatedEventsMapping,
+        tokens_claimed: &TokenV1Claimed,
     ) -> anyhow::Result<Option<Self>> {
         let table_item_data = table_item.data.as_ref().unwrap();
 
@@ -176,50 +164,26 @@ impl CurrentTokenPendingClaim {
             let table_handle = standardize_address(&table_item.handle.to_string());
             let token_data_id = offer.token_id.token_data_id.to_id();
 
-            // Try to get owner from table_handle_to_owner (uses v1 events). If that doesn't exist, try to get owner
-            // from token_v1_aggregated_events (uses module v2 events).
-            let maybe_owner_address = table_handle_to_owner
+            // Try to find owner from write resources
+            let mut maybe_owner_address = table_handle_to_owner
                 .get(&table_handle)
-                .map(|tm| tm.get_owner_address())
-                .or_else(|| {
-                    token_v1_aggregated_events
-                        .get(&token_data_id)
-                        .and_then(|events| {
-                            events
-                                .token_offer_claim_module_events
-                                .last()?
-                                .from_address
-                                .clone()
-                        })
-                })
-                .or_else(|| {
-                    token_v1_aggregated_events
-                        .get(&token_data_id)
-                        .and_then(|events| {
-                            events
-                                .token_offer_cancel_module_events
-                                .last()?
-                                .from_address
-                                .clone()
-                        })
-                });
+                .map(|table_metadata| table_metadata.get_owner_address());
 
-            let owner_address = match maybe_owner_address {
-                Some(addr) => addr,
-                None => {
-                    tracing::warn!(
-                        transaction_version = txn_version,
-                        table_handle = table_handle,
-                        token_data_id = token_data_id,
-                        "Missing table handle metadata and offer claim or offer cancel event for token. \
-                            table_handle_to_owner: {:?}, \
-                            token_v1_aggregated_events: {:?}",
-                        table_handle_to_owner,
-                        token_v1_aggregated_events,
-                    );
-                    return Ok(None);
-                },
-            };
+            // If table handle isn't in TableHandleToOwner, try to find owner from token v1 claim events
+            if maybe_owner_address.is_none() {
+                if let Some(token_claimed) = tokens_claimed.get(&token_data_id) {
+                    maybe_owner_address = token_claimed.from_address.clone();
+                }
+            }
+
+            let owner_address = maybe_owner_address.unwrap_or_else(|| {
+                panic!(
+                    "Missing table handle metadata for claim. \
+                        Version: {txn_version}, table handle for PendingClaims: {table_handle}, all metadata: {table_handle_to_owner:?} \
+                        Missing token data id in token claim event. \
+                        token_data_id: {token_data_id}, all token claim events: {tokens_claimed:?}"
+                )
+            });
 
             let token_id = offer.token_id.clone();
             let token_data_id_struct = token_id.token_data_id;

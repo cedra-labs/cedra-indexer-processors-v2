@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use diesel::{Identifiable, Insertable, Queryable};
@@ -27,8 +27,8 @@ pub struct PublicKeyAuthKey {
     pub public_key: String,
     pub public_key_type: String,
     pub auth_key: String,
+    pub account_public_key: Option<String>,
     pub is_public_key_used: bool,
     pub last_transaction_version: i64,
     pub signature_type: String,
-    pub account_public_key: Option<String>,
 }

@@ -9,7 +9,7 @@ use crate::{
 };
 use ahash::AHashMap;
 use anyhow::Result;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     postgres::utils::database::{execute_in_chunks, get_config_table_chunk_size, ArcDbPool},
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},
     types::transaction_context::TransactionContext,
@@ -129,11 +129,6 @@ pub fn insert_signatures_query(
             type_.eq(excluded(type_)),
             any_signature_type.eq(excluded(any_signature_type)),
             public_key_type.eq(excluded(public_key_type)),
-            public_key.eq(excluded(public_key)),
-            threshold.eq(excluded(threshold)),
-            public_key_indices.eq(excluded(public_key_indices)),
-            function_info.eq(excluded(function_info)),
-            signature.eq(excluded(signature)),
             inserted_at.eq(excluded(inserted_at)),
         ))
 }

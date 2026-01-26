@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -17,8 +17,8 @@ use crate::{
     utils::counters::PROCESSOR_UNKNOWN_TYPE_COUNT,
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::{
         transaction::TxnData, write_set_change::Change as WriteSetChange, Transaction,
     },
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},

@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -6,9 +6,9 @@
 #![allow(clippy::unused_unit)]
 
 use ahash::AHashSet;
-use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::transaction::v1::{transaction::TxnData, write_set_change::Change, Transaction},
+use cedra_indexer_processor_sdk::{
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp,
+    cedra_protos::transaction::v1::{transaction::TxnData, write_set_change::Change, Transaction},
     utils::convert::standardize_address,
 };
 use diesel::{Identifiable, Insertable, Queryable};

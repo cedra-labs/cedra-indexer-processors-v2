@@ -18,8 +18,8 @@ use crate::{
     utils::table_flags::TableFlags,
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::Transaction,
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::Transaction,
     postgres::utils::database::ArcDbPool,
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},
     types::transaction_context::TransactionContext,
@@ -27,6 +27,7 @@ use aptos_indexer_processor_sdk::{
 };
 use async_trait::async_trait;
 use std::collections::HashMap;
+use tracing::debug;
 
 /// Extracts parquet data from transactions, allowing optional selection of specific tables.
 pub struct ParquetFungibleAssetExtractor
@@ -75,6 +76,7 @@ impl Processable for ParquetFungibleAssetExtractor {
             raw_fungible_asset_metadata,
             raw_fungible_asset_balances,
             _,
+            _raw_coin_supply,
             raw_fa_to_coin_mappings,
         ) = parse_v2_coin(&transactions.data, Some(&self.fa_to_coin_mapping)).await;
 
@@ -101,6 +103,25 @@ impl Processable for ParquetFungibleAssetExtractor {
                 .into_iter()
                 .map(ParquetFungibleAssetToCoinMapping::from)
                 .collect();
+
+        // Print the size of each extracted data type
+        debug!("Processed data sizes:");
+        debug!(
+            " - V2FungibleAssetActivity: {}",
+            parquet_fungible_asset_activities.len()
+        );
+        debug!(
+            " - V2FungibleAssetMetadata: {}",
+            parquet_fungible_asset_metadata.len()
+        );
+        debug!(
+            " - V2FungibleAssetBalance: {}",
+            parquet_fungible_asset_balances.len()
+        );
+        debug!(
+            " - V2FungibleAssetToCoinMapping: {}",
+            parquet_fa_to_coin_mappings.len()
+        );
 
         let mut map: HashMap<ParquetTypeEnum, ParquetTypeStructs> = HashMap::new();
 

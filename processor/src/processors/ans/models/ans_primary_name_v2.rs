@@ -17,7 +17,7 @@ use crate::{
     schema::{ans_primary_name_v2, current_ans_primary_name_v2},
 };
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::Event;
+use cedra_indexer_processor_sdk::cedra_protos::transaction::v1::Event;
 use diesel::{Identifiable, Insertable};
 use field_count::FieldCount;
 use parquet_derive::ParquetRecordWriter;

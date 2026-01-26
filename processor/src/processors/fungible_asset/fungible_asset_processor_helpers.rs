@@ -1,29 +1,34 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use super::fungible_asset_models::v2_fungible_asset_activities::StoreAddressToDeletedFungibleAssetStoreEvent;
 use crate::{
     db::resources::{FromWriteResource, V2FungibleAssetResource},
     processors::{
-        fungible_asset::fungible_asset_models::{
-            v2_fungible_asset_activities::{EventToCoinType, FungibleAssetActivity},
-            v2_fungible_asset_balances::{
-                CurrentUnifiedFungibleAssetBalance, FungibleAssetBalance,
+        fungible_asset::{
+            coin_models::coin_supply::CoinSupply,
+            fungible_asset_models::{
+                v2_fungible_asset_activities::{EventToCoinType, FungibleAssetActivity},
+                v2_fungible_asset_balances::{
+                    CurrentUnifiedFungibleAssetBalance, FungibleAssetBalance,
+                },
+                v2_fungible_asset_to_coin_mappings::{
+                    FungibleAssetToCoinMapping, FungibleAssetToCoinMappings,
+                    FungibleAssetToCoinMappingsForDB,
+                },
+                v2_fungible_asset_utils::{FeeStatement, FungibleAssetStoreDeletionEvent},
+                v2_fungible_metadata::{FungibleAssetMetadataMapping, FungibleAssetMetadataModel},
             },
-            v2_fungible_asset_to_coin_mappings::{
-                FungibleAssetToCoinMapping, FungibleAssetToCoinMappings,
-                FungibleAssetToCoinMappingsForDB,
-            },
-            v2_fungible_asset_utils::{FeeStatement, FungibleAssetStoreDeletionEvent},
-            v2_fungible_metadata::{FungibleAssetMetadataMapping, FungibleAssetMetadataModel},
         },
-        objects::v2_object_utils::{ObjectAggregatedDataMapping, ObjectWithMetadata},
+        objects::v2_object_utils::{
+            ObjectAggregatedData, ObjectAggregatedDataMapping, ObjectWithMetadata,
+        },
     },
     utils::counters::PROCESSOR_UNKNOWN_TYPE_COUNT,
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{transaction::TxnData, write_set_change::Change, Transaction},
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::{transaction::TxnData, write_set_change::Change, Transaction},
     utils::{convert::standardize_address, extract::get_entry_function_from_user_request},
 };
 use chrono::NaiveDateTime;
@@ -94,10 +99,12 @@ pub async fn parse_v2_coin(
         Vec<CurrentUnifiedFungibleAssetBalance>,
         Vec<CurrentUnifiedFungibleAssetBalance>,
     ),
+    Vec<CoinSupply>,
     Vec<FungibleAssetToCoinMapping>,
 ) {
     let mut fungible_asset_activities: Vec<FungibleAssetActivity> = vec![];
     let mut fungible_asset_balances: Vec<FungibleAssetBalance> = vec![];
+    let mut all_coin_supply: Vec<CoinSupply> = vec![];
     let mut fungible_asset_metadata: FungibleAssetMetadataMapping = AHashMap::new();
     let mut fa_to_coin_mappings: FungibleAssetToCoinMappingsForDB = AHashMap::new();
 
@@ -107,6 +114,7 @@ pub async fn parse_v2_coin(
             let mut fungible_asset_activities = vec![];
             let mut fungible_asset_metadata = AHashMap::new();
             let mut fungible_asset_balances = vec![];
+            let mut all_coin_supply = vec![];
             let mut fa_to_coin_mappings: FungibleAssetToCoinMappingsForDB = AHashMap::new();
 
             // Get Metadata for fungible assets by object address
@@ -126,6 +134,7 @@ pub async fn parse_v2_coin(
                     fungible_asset_activities,
                     fungible_asset_metadata,
                     fungible_asset_balances,
+                    all_coin_supply,
                     fa_to_coin_mappings,
                 );
             }
@@ -139,7 +148,7 @@ pub async fn parse_v2_coin(
             #[allow(deprecated)]
             let txn_timestamp = NaiveDateTime::from_timestamp_opt(txn_timestamp, 0)
                 .expect("Txn Timestamp is invalid!");
-            let _txn_epoch = txn.epoch as i64;
+            let txn_epoch = txn.epoch as i64;
 
             let default = vec![];
             let (events, user_request, entry_function_id_str) = match txn_data {
@@ -169,38 +178,17 @@ pub async fn parse_v2_coin(
             // about the deleted store.
             let mut store_address_to_deleted_fa_store_events: StoreAddressToDeletedFungibleAssetStoreEvent = AHashMap::new();
             // Loop 1: to get all object addresses
-            // Fill the v2 fungible_asset_object_helper. This is used to track which objects exist at each object address.
-            // The data will be used to reconstruct the full data in Loop 4.
+            // Need to do a first pass to get all the object addresses and insert them into the helper
             for wsc in transaction_info.changes.iter() {
                 if let Change::WriteResource(wr) = wsc.change.as_ref().unwrap() {
-                    let address = standardize_address(&wr.address.to_string());
-                    let entry = fungible_asset_object_helper
-                        .entry(address)
-                        .or_default();
-
-                    // Update object if present
                     if let Some(object) = ObjectWithMetadata::from_write_resource(wr).unwrap() {
-                        entry.object = Some(object);
-                    }
-                    // Update fungible asset resource if present
-                    else if let Some(v2) = V2FungibleAssetResource::from_write_resource(wr).unwrap() {
-                        match v2 {
-                            V2FungibleAssetResource::FungibleAssetMetadata(fam) => {
-                                entry.fungible_asset_metadata = Some(fam);
-                            }
-                            V2FungibleAssetResource::FungibleAssetStore(fas) => {
-                                entry.fungible_asset_store = Some(fas);
-                            }
-                            V2FungibleAssetResource::FungibleAssetSupply(fas) => {
-                                entry.fungible_asset_supply = Some(fas);
-                            }
-                            V2FungibleAssetResource::ConcurrentFungibleAssetSupply(cfas) => {
-                                entry.concurrent_fungible_asset_supply = Some(cfas);
-                            }
-                            V2FungibleAssetResource::ConcurrentFungibleAssetBalance(cfab) => {
-                                entry.concurrent_fungible_asset_balance = Some(cfab);
-                            }
-                        }
+                        fungible_asset_object_helper.insert(
+                            standardize_address(&wr.address.to_string()),
+                            ObjectAggregatedData {
+                                object,
+                                ..ObjectAggregatedData::default()
+                            },
+                        );
                     }
                 }
             }
@@ -212,15 +200,12 @@ pub async fn parse_v2_coin(
                     &event.data,
                     txn_version,
                 ) {
-                    // Standardize the store address to ensure consistent lookup
-                    let standardized_store = standardize_address(&fa_store_deletion_event.store);
                     store_address_to_deleted_fa_store_events.insert(
-                        standardized_store,
+                        fa_store_deletion_event.clone().store,
                         fa_store_deletion_event,
                     );
                 }
             }
-
 
             // Loop 3: Get the metadata relevant to parse v1 coin and v2 fungible asset from write set changes
             // As an optimization, we also handle v1 balances in the process
@@ -237,6 +222,47 @@ pub async fn parse_v2_coin(
                     {
                         fungible_asset_balances.push(balance);
                         event_to_v1_coin_type.extend(event_to_coin);
+                    }
+                    // Fill the v2 fungible_asset_object_helper. This is used to track which objects exist at each object address.
+                    // The data will be used to reconstruct the full data in Loop 4.
+                    let address = standardize_address(&write_resource.address.to_string());
+                    if let Some(aggregated_data) = fungible_asset_object_helper.get_mut(&address) {
+                        if let Some(v2_fungible_asset_resource) =
+                            V2FungibleAssetResource::from_write_resource(write_resource).unwrap()
+                        {
+                            match v2_fungible_asset_resource {
+                                V2FungibleAssetResource::FungibleAssetMetadata(
+                                    fungible_asset_metadata,
+                                ) => {
+                                    aggregated_data.fungible_asset_metadata =
+                                        Some(fungible_asset_metadata);
+                                },
+                                V2FungibleAssetResource::FungibleAssetStore(
+                                    fungible_asset_store,
+                                ) => {
+                                    aggregated_data.fungible_asset_store =
+                                        Some(fungible_asset_store);
+                                },
+                                V2FungibleAssetResource::FungibleAssetSupply(
+                                    fungible_asset_supply,
+                                ) => {
+                                    aggregated_data.fungible_asset_supply =
+                                        Some(fungible_asset_supply);
+                                },
+                                V2FungibleAssetResource::ConcurrentFungibleAssetSupply(
+                                    concurrent_fungible_asset_supply,
+                                ) => {
+                                    aggregated_data.concurrent_fungible_asset_supply =
+                                        Some(concurrent_fungible_asset_supply);
+                                },
+                                V2FungibleAssetResource::ConcurrentFungibleAssetBalance(
+                                    concurrent_fungible_asset_balance,
+                                ) => {
+                                    aggregated_data.concurrent_fungible_asset_balance =
+                                        Some(concurrent_fungible_asset_balance);
+                                },
+                            }
+                        }
                     }
                 } else if let Change::DeleteResource(delete_resource) = wsc.change.as_ref().unwrap()
                 {
@@ -370,7 +396,6 @@ pub async fn parse_v2_coin(
                             txn_version,
                             txn_timestamp,
                             &fungible_asset_object_helper,
-                            &store_address_to_deleted_fa_store_events,
                         )
                         .unwrap_or_else(|e| {
                             tracing::error!(
@@ -381,6 +406,18 @@ pub async fn parse_v2_coin(
                             panic!("[Parser] error parsing fungible balance v2");
                         }) {
                             fungible_asset_balances.push(balance);
+                        }
+                    },
+                    Change::WriteTableItem(table_item) => {
+                        if let Some(coin_supply) = CoinSupply::from_write_table_item(
+                            table_item,
+                            txn_version,
+                            txn_timestamp,
+                            txn_epoch,
+                        )
+                        .unwrap()
+                        {
+                            all_coin_supply.push(coin_supply);
                         }
                     },
                     Change::DeleteResource(delete_resource) => {
@@ -409,14 +446,16 @@ pub async fn parse_v2_coin(
                 fungible_asset_activities,
                 fungible_asset_metadata,
                 fungible_asset_balances,
+                all_coin_supply,
                 fa_to_coin_mappings,
             )
         })
         .collect();
 
-    for (faa, fam, fab, ctfm) in data {
+    for (faa, fam, fab, acs, ctfm) in data {
         fungible_asset_activities.extend(faa);
         fungible_asset_balances.extend(fab);
+        all_coin_supply.extend(acs);
         fungible_asset_metadata.extend(fam);
         fa_to_coin_mappings.extend(ctfm);
     }
@@ -453,6 +492,7 @@ pub async fn parse_v2_coin(
         fungible_asset_metadata,
         fungible_asset_balances,
         (current_unified_fab_v1, current_unified_fab_v2),
+        all_coin_supply,
         fa_to_coin_mapping,
     )
 }

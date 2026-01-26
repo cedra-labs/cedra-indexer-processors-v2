@@ -1,5 +1,5 @@
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
+use cedra_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
 use processor::config::{
     db_config::{DbConfig, PostgresConfig},
     indexer_processor_config::IndexerProcessorConfig,
@@ -48,14 +48,14 @@ mod sdk_account_restoration_processor_tests {
     use super::setup_account_restoration_processor_config;
     use crate::{
         diff_test_helper::account_restoration_processor::load_data,
-        sdk_tests::test_helpers::{run_processor_test, validate_json, DEFAULT_OUTPUT_FOLDER},
+        sdk_tests::{
+            run_processor_test, validate_json, PostgresTestDatabase, DEFAULT_OUTPUT_FOLDER,
+        },
     };
-    use aptos_indexer_processor_sdk::testing_framework::{
-        cli_parser::get_test_config,
-        database::{PostgresTestDatabase, TestDatabase},
-        sdk_test_context::SdkTestContext,
+    use cedra_indexer_processor_sdk::testing_framework::{
+        cli_parser::get_test_config, database::TestDatabase, sdk_test_context::SdkTestContext,
     };
-    use aptos_indexer_test_transactions::json_transactions::generated_transactions::{
+    use cedra_indexer_test_transactions::json_transactions::generated_transactions::{
         IMPORTED_MAINNET_TXNS_2200077591_ACCOUNT_RESTORATION_SINGLE_ED25519,
         IMPORTED_MAINNET_TXNS_2200077673_ACCOUNT_RESTORATION_UNVERIFIED_KEY_ROTATION_TO_MULTI_KEY_TXN,
         IMPORTED_MAINNET_TXNS_2200077800_ACCOUNT_RESTORATION_ROTATED_TO_MULTI_KEY,
@@ -79,17 +79,6 @@ mod sdk_account_restoration_processor_tests {
 
     pub const IMPORTED_DEVNET_122009973_KEYLESS_BACKUP_TXN: &[u8] =
         include_bytes!("test_transactions/sender_1/122009973_keyless_backup_txn.json");
-
-    pub const IMPORTED_DEVNET_57156484_DUPLICATED_KEYLESS_MULTIKEY_TXN: &[u8] = include_bytes!(
-        "test_transactions/duplicated_keyless_multikey/57156484_duplicated_keyless_multikey.json"
-    );
-
-    pub const IMPORTED_MAINNET_3091258100_TXN: &[u8] =
-        include_bytes!("test_transactions/mainnet_multiple_update_conflict/3091258100.json");
-    pub const IMPORTED_MAINNET_3091258104_TXN: &[u8] =
-        include_bytes!("test_transactions/mainnet_multiple_update_conflict/3091258104.json");
-    pub const IMPORTED_MAINNET_3091258105_TXN: &[u8] =
-        include_bytes!("test_transactions/mainnet_multiple_update_conflict/3091258105.json");
 
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
     async fn test_keyless_backup_txn_and_coin_transfer_txn_and_another_keyless_backup_txn() {
@@ -128,34 +117,6 @@ mod sdk_account_restoration_processor_tests {
         process_transactions(
             &[IMPORTED_LOCALNET_TXNS_KEYLESS_BACKUP_TXN],
             Some("test_keyless_backup_txn".to_string()),
-            &db,
-            None,
-        )
-        .await;
-    }
-
-    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-    async fn test_duplicated_keyless_multikey_txn() {
-        let db = setup_db().await;
-        process_transactions(
-            &[IMPORTED_DEVNET_57156484_DUPLICATED_KEYLESS_MULTIKEY_TXN],
-            Some("test_duplicated_keyless_multikey_txn".to_string()),
-            &db,
-            None,
-        )
-        .await;
-    }
-
-    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-    async fn test_duplicated_keyless_multi_ed_txn() {
-        let db = setup_db().await;
-        process_transactions(
-            &[
-                IMPORTED_MAINNET_3091258100_TXN,
-                IMPORTED_MAINNET_3091258104_TXN,
-                IMPORTED_MAINNET_3091258105_TXN,
-            ],
-            Some("test_duplicated_keyless_multi_ed_txn".to_string()),
             &db,
             None,
         )

@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -18,8 +18,8 @@ use crate::{
 };
 use allocative_derive::Allocative;
 use anyhow::Context;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::WriteResource,
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::WriteResource,
     utils::convert::{standardize_address, truncate_str},
 };
 use field_count::FieldCount;
@@ -94,28 +94,22 @@ impl CurrentTokenV2Metadata {
                     },
                 };
 
-                let state_key_hash = object_data
-                    .object
-                    .as_ref()
-                    .map(|object| object.get_state_key_hash());
-
-                if let Some(state_key_hash) = state_key_hash {
-                    if state_key_hash != resource.state_key_hash {
-                        return Ok(None);
-                    }
-
-                    let resource_type = truncate_str(&resource.resource_type, NAME_LENGTH);
-                    return Ok(Some(CurrentTokenV2Metadata {
-                        object_address,
-                        resource_type,
-                        data: resource
-                            .data
-                            .context("data must be present in write resource")?,
-                        state_key_hash: resource.state_key_hash,
-                        last_transaction_version: txn_version,
-                        last_transaction_timestamp: txn_timestamp,
-                    }));
+                let state_key_hash = object_data.object.get_state_key_hash();
+                if state_key_hash != resource.state_key_hash {
+                    return Ok(None);
                 }
+
+                let resource_type = truncate_str(&resource.resource_type, NAME_LENGTH);
+                return Ok(Some(CurrentTokenV2Metadata {
+                    object_address,
+                    resource_type,
+                    data: resource
+                        .data
+                        .context("data must be present in write resource")?,
+                    state_key_hash: resource.state_key_hash,
+                    last_transaction_version: txn_version,
+                    last_transaction_timestamp: txn_timestamp,
+                }));
             }
         }
         Ok(None)

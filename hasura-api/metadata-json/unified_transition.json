@@ -125,7 +125,7 @@
             ],
             "array_relationships": [
               {
-                "name": "aptos_names",
+                "name": "cedra_names",
                 "using": {
                   "manual_configuration": {
                     "column_mapping": {
@@ -133,7 +133,7 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "current_aptos_names",
+                      "name": "current_cedra_names",
                       "schema": "public"
                     }
                   }
@@ -471,7 +471,7 @@
             },
             "object_relationships": [
               {
-                "name": "aptos_name",
+                "name": "cedra_name",
                 "using": {
                   "manual_configuration": {
                     "column_mapping": {
@@ -479,7 +479,7 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "current_aptos_names",
+                      "name": "current_cedra_names",
                       "schema": "public"
                     }
                   }
@@ -597,7 +597,7 @@
             ],
             "array_relationships": [
               {
-                "name": "aptos_names_owner",
+                "name": "cedra_names_owner",
                 "using": {
                   "manual_configuration": {
                     "column_mapping": {
@@ -605,14 +605,14 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "current_aptos_names",
+                      "name": "current_cedra_names",
                       "schema": "public"
                     }
                   }
                 }
               },
               {
-                "name": "aptos_names_to",
+                "name": "cedra_names_to",
                 "using": {
                   "manual_configuration": {
                     "column_mapping": {
@@ -620,7 +620,7 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "current_aptos_names",
+                      "name": "current_cedra_names",
                       "schema": "public"
                     }
                   }
@@ -1105,7 +1105,7 @@
           },
           {
             "table": {
-              "name": "current_aptos_names",
+              "name": "current_cedra_names",
               "schema": "public"
             },
             "object_relationships": [
@@ -1119,7 +1119,7 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "current_aptos_names",
+                      "name": "current_cedra_names",
                       "schema": "public"
                     }
                   }
@@ -1483,7 +1483,7 @@
             },
             "array_relationships": [
               {
-                "name": "operator_aptos_name",
+                "name": "operator_cedra_name",
                 "using": {
                   "manual_configuration": {
                     "column_mapping": {
@@ -1491,7 +1491,7 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "current_aptos_names",
+                      "name": "current_cedra_names",
                       "schema": "public"
                     }
                   }
@@ -1545,7 +1545,7 @@
             },
             "object_relationships": [
               {
-                "name": "aptos_name",
+                "name": "cedra_name",
                 "using": {
                   "manual_configuration": {
                     "column_mapping": {
@@ -1553,7 +1553,7 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "current_aptos_names",
+                      "name": "current_cedra_names",
                       "schema": "public"
                     }
                   }
@@ -2035,7 +2035,7 @@
             ],
             "array_relationships": [
               {
-                "name": "owner_aptos_names",
+                "name": "owner_cedra_names",
                 "using": {
                   "manual_configuration": {
                     "column_mapping": {
@@ -2043,7 +2043,7 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "current_aptos_names",
+                      "name": "current_cedra_names",
                       "schema": "public"
                     }
                   }
@@ -2306,7 +2306,7 @@
             ],
             "array_relationships": [
               {
-                "name": "aptos_names_from",
+                "name": "cedra_names_from",
                 "using": {
                   "manual_configuration": {
                     "column_mapping": {
@@ -2314,14 +2314,14 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "current_aptos_names",
+                      "name": "current_cedra_names",
                       "schema": "public"
                     }
                   }
                 }
               },
               {
-                "name": "aptos_names_to",
+                "name": "cedra_names_to",
                 "using": {
                   "manual_configuration": {
                     "column_mapping": {
@@ -2329,7 +2329,7 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "current_aptos_names",
+                      "name": "current_cedra_names",
                       "schema": "public"
                     }
                   }

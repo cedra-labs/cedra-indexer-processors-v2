@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -18,8 +18,8 @@ use crate::{
 };
 use ahash::AHashMap;
 use allocative::Allocative;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::WriteResource, utils::convert::standardize_address,
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::WriteResource, utils::convert::standardize_address,
 };
 use diesel::prelude::*;
 use field_count::FieldCount;

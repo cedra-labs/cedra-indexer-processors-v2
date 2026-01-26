@@ -1,13 +1,13 @@
 use crate::{
     parquet_processors::{
-        parquet_events::parquet_events_model::{parse_events, ParquetEvent},
-        parquet_utils::util::add_to_map_if_opted_in_for_backfill,
-        ParquetTypeEnum, ParquetTypeStructs,
+        parquet_utils::util::add_to_map_if_opted_in_for_backfill, ParquetTypeEnum,
+        ParquetTypeStructs,
     },
+    processors::events::{events_model::ParquetEvent, parse_events},
     utils::table_flags::TableFlags,
 };
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::Transaction,
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::Transaction,
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},
     types::transaction_context::TransactionContext,
     utils::errors::ProcessorError,
@@ -41,6 +41,7 @@ impl Processable for ParquetEventsExtractor {
             .par_iter()
             .map(|txn| parse_events(txn, self.name().as_str()))
             .flatten()
+            .map(|e| e.into())
             .collect();
 
         let mut map: HashMap<ParquetTypeEnum, ParquetTypeStructs> = HashMap::new();

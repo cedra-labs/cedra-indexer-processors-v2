@@ -1,4 +1,5 @@
 use crate::processors::fungible_asset::{
+    coin_models::coin_supply::CoinSupply,
     fungible_asset_models::{
         v2_fungible_asset_activities::PostgresFungibleAssetActivity,
         v2_fungible_asset_balances::{
@@ -14,8 +15,8 @@ use crate::processors::fungible_asset::{
 };
 use ahash::AHashMap;
 use anyhow::Result;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::Transaction,
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::Transaction,
     postgres::utils::database::ArcDbPool,
     traits::{async_step::AsyncRunType, AsyncStep, NamedStep, Processable},
     types::transaction_context::TransactionContext,
@@ -70,6 +71,7 @@ impl Processable for FungibleAssetExtractor {
             Vec<PostgresCurrentUnifiedFungibleAssetBalance>,
             Vec<PostgresCurrentUnifiedFungibleAssetBalance>,
         ),
+        Vec<CoinSupply>,
         Vec<PostgresFungibleAssetToCoinMapping>,
     );
     type RunType = AsyncRunType;
@@ -87,6 +89,7 @@ impl Processable for FungibleAssetExtractor {
                     Vec<PostgresCurrentUnifiedFungibleAssetBalance>,
                     Vec<PostgresCurrentUnifiedFungibleAssetBalance>,
                 ),
+                Vec<CoinSupply>,
                 Vec<PostgresFungibleAssetToCoinMapping>,
             )>,
         >,
@@ -100,6 +103,7 @@ impl Processable for FungibleAssetExtractor {
             raw_fungible_asset_metadata,
             raw_fungible_asset_balances,
             (raw_current_unified_fab_v1, raw_current_unified_fab_v2),
+            coin_supply,
             fa_to_coin_mappings,
         ) = parse_v2_coin(&transactions.data, Some(&self.fa_to_coin_mapping)).await;
 
@@ -146,6 +150,7 @@ impl Processable for FungibleAssetExtractor {
                     postgres_current_unified_fab_v1,
                     postgres_current_unified_fab_v2,
                 ),
+                coin_supply,
                 postgres_fa_to_coin_mappings,
             ),
             metadata: transactions.metadata,

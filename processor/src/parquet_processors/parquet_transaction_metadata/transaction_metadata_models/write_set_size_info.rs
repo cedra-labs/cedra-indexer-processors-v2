@@ -1,11 +1,11 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 #![allow(clippy::extra_unused_lifetimes)]
 
 use crate::parquet_processors::parquet_utils::util::{HasVersion, NamedTable};
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::WriteOpSizeInfo;
+use cedra_indexer_processor_sdk::cedra_protos::transaction::v1::WriteOpSizeInfo;
 use field_count::FieldCount;
 use parquet_derive::ParquetRecordWriter;
 use serde::{Deserialize, Serialize};

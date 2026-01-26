@@ -6,7 +6,7 @@ use crate::{
     utils::counters::PARQUET_BUFFER_SIZE,
 };
 use anyhow::{Context, Result};
-use aptos_indexer_processor_sdk::utils::errors::ProcessorError;
+use cedra_indexer_processor_sdk::utils::errors::ProcessorError;
 use async_trait::async_trait;
 use chrono::{Datelike, Timelike};
 use google_cloud_storage::{

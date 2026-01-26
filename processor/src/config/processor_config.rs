@@ -1,11 +1,10 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // TODO: add back all models and configs back as we migrate
 use crate::{
     parquet_processors::{
         parquet_ans::parquet_ans_processor::ParquetAnsProcessorConfig,
-        parquet_events::parquet_events_model::ParquetEvent,
         parquet_transaction_metadata::transaction_metadata_models::write_set_size_info::ParquetWriteSetSize,
         parquet_utils::util::{format_table_name, NamedTable, VALID_TABLE_NAMES},
     },
@@ -26,10 +25,13 @@ use crate::{
             transactions::ParquetTransaction,
             write_set_changes::ParquetWriteSetChange,
         },
+        events::events_model::ParquetEvent,
         fungible_asset::fungible_asset_models::{
             v2_fungible_asset_activities::ParquetFungibleAssetActivity,
-            v2_fungible_asset_balances::ParquetFungibleAssetBalance,
-            v2_fungible_asset_to_coin_mappings::ParquetFungibleAssetToCoinMapping,
+            v2_fungible_asset_balances::{
+                ParquetCurrentFungibleAssetBalance, ParquetCurrentUnifiedFungibleAssetBalance,
+                ParquetFungibleAssetBalance,
+            },
             v2_fungible_metadata::ParquetFungibleAssetMetadataModel,
         },
         objects::{
@@ -102,6 +104,7 @@ pub enum ProcessorConfig {
     AccountTransactionsProcessor(DefaultProcessorConfig),
     AnsProcessor(AnsProcessorConfig),
     DefaultProcessor(DefaultProcessorConfig),
+    EventsProcessor(DefaultProcessorConfig),
     FungibleAssetProcessor(DefaultProcessorConfig),
     UserTransactionProcessor(DefaultProcessorConfig),
     StakeProcessor(StakeProcessorConfig),
@@ -165,7 +168,8 @@ impl ProcessorConfig {
         if default_config.backfill_table.is_empty() {
             Ok(valid_table_names
                 .iter()
-                .map(|table_name| format_table_name(processor_name, table_name))
+                .cloned()
+                .map(|table_name| format_table_name(processor_name, &table_name))
                 .collect())
         } else {
             Self::validate_backfill_table_names(&default_config.backfill_table, valid_table_names)
@@ -201,8 +205,9 @@ impl ProcessorConfig {
             ProcessorName::ParquetFungibleAssetProcessor => HashSet::from([
                 ParquetFungibleAssetActivity::TABLE_NAME.to_string(),
                 ParquetFungibleAssetBalance::TABLE_NAME.to_string(),
+                ParquetCurrentFungibleAssetBalance::TABLE_NAME.to_string(),
+                ParquetCurrentUnifiedFungibleAssetBalance::TABLE_NAME.to_string(),
                 ParquetFungibleAssetMetadataModel::TABLE_NAME.to_string(),
-                ParquetFungibleAssetToCoinMapping::TABLE_NAME.to_string(),
             ]),
             ProcessorName::ParquetTransactionMetadataProcessor => {
                 HashSet::from([ParquetWriteSetSize::TABLE_NAME.to_string()])
@@ -235,6 +240,7 @@ impl ProcessorConfig {
     }
 
     /// This is to validate table_name for the backfill table
+    #[allow(dead_code)]
     fn validate_backfill_table_names(
         table_names: &HashSet<String>,
         valid_table_names: &HashSet<String>,

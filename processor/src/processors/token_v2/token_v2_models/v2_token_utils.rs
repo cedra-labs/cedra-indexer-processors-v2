@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -10,8 +10,8 @@ use crate::processors::{
 };
 use ahash::{AHashMap, AHashSet};
 use anyhow::{Context, Result};
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{Event, WriteResource},
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::{Event, WriteResource},
     utils::{
         convert::{deserialize_from_string, standardize_address, truncate_str},
         extract::{
@@ -99,12 +99,12 @@ impl TryFrom<&WriteResource> for Collection {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct AptosCollection {
+pub struct CedraCollection {
     pub mutable_description: bool,
     pub mutable_uri: bool,
 }
 
-impl TryFrom<&WriteResource> for AptosCollection {
+impl TryFrom<&WriteResource> for CedraCollection {
     type Error = anyhow::Error;
 
     fn try_from(write_resource: &WriteResource) -> anyhow::Result<Self> {

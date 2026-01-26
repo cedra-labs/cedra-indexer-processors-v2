@@ -3,13 +3,13 @@ pub mod account_transactions_model;
 pub mod account_transactions_processor;
 pub mod account_transactions_storer;
 
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::processors::account_transactions::account_transactions_model::AccountTransaction;
-use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::transaction::v1::Transaction,
+use cedra_indexer_processor_sdk::{
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp,
+    cedra_protos::transaction::v1::Transaction,
 };
 use rayon::prelude::*;
 

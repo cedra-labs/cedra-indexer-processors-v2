@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -12,6 +12,7 @@ use crate::{
         objects::v2_object_utils::ObjectAggregatedDataMapping,
         token_v2::{
             token_models::{
+                collection_datas::CollectionData,
                 token_utils::{CollectionDataIdType, TokenWriteSet},
                 tokens::TableHandleToOwner,
             },
@@ -22,8 +23,8 @@ use crate::{
 };
 use allocative_derive::Allocative;
 use anyhow::Context;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{WriteResource, WriteTableItem},
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::{WriteResource, WriteTableItem},
     postgres::utils::database::{DbContext, DbPoolConnection},
     utils::convert::standardize_address,
 };
@@ -126,7 +127,7 @@ impl CollectionV2 {
                 if let Some(supply) = concurrent_supply {
                     (current_supply, max_supply, total_minted_v2) = (
                         supply.current_supply.value.clone(),
-                        if supply.current_supply.max_value == BigDecimal::from(u64::MAX) {
+                        if supply.current_supply.max_value == u64::MAX.into() {
                             None
                         } else {
                             Some(supply.current_supply.max_value.clone())
@@ -135,8 +136,8 @@ impl CollectionV2 {
                     );
                 }
 
-                // Getting collection mutability config from AptosCollection
-                let collection = object_data.aptos_collection.as_ref();
+                // Getting collection mutability config from CedraCollection
+                let collection = object_data.cedra_collection.as_ref();
                 if let Some(collection) = collection {
                     mutable_description = Some(collection.mutable_description);
                     mutable_uri = Some(collection.mutable_uri);
@@ -218,9 +219,6 @@ impl CollectionV2 {
             Some(TokenWriteSet::CollectionData(inner)) => Some(inner),
             _ => None,
         };
-        // Lookup the collection table item from the table handle. This is used to get creator address to construct the
-        // primary key. If we don't know the table handle, we can't get the collection metadata, so we need to do a db lookup.
-        // In the future, we should deprecate the creation of collection v1's.
         if let Some(collection_data) = maybe_collection_data {
             let table_handle = table_item.handle.to_string();
             let maybe_creator_address = table_handle_to_owner
@@ -228,35 +226,52 @@ impl CollectionV2 {
                 .map(|table_metadata| table_metadata.get_owner_address());
             let mut creator_address = match maybe_creator_address {
                 Some(ca) => ca,
-                None => match db_context {
-                    None => {
-                        tracing::debug!(
-                            transaction_version = txn_version,
-                            lookup_key = &table_handle,
-                            "Avoiding db lookup for Parquet."
-                        );
-                        DEFAULT_CREATOR_ADDRESS.to_string()
-                    },
-                    Some(db_context) => {
-                        match Self::get_collection_creator_for_v1(
-                            &mut db_context.conn,
-                            &table_handle,
-                            db_context.query_retries,
-                            db_context.query_retry_delay_ms,
-                        )
-                        .await
-                        {
-                            Ok(ca) => ca,
-                            Err(_) => {
-                                tracing::warn!(
-                                        transaction_version = txn_version,
-                                        lookup_key = &table_handle,
-                                        "Failed to get collection creator for table handle {table_handle}, txn version {txn_version}. You probably should backfill db."
-                                    );
-                                return Ok(None);
-                            },
-                        }
-                    },
+                None => {
+                    match db_context {
+                        None => {
+                            tracing::debug!(
+                                transaction_version = txn_version,
+                                lookup_key = &table_handle,
+                                "Avoiding db lookup for Parquet."
+                            );
+                            DEFAULT_CREATOR_ADDRESS.to_string()
+                        },
+                        Some(db_context) => {
+                            match Self::get_collection_creator_for_v1(
+                                &mut db_context.conn,
+                                &table_handle,
+                                db_context.query_retries,
+                                db_context.query_retry_delay_ms,
+                            )
+                            .await
+                            .context(format!(
+                                "Failed to get collection creator for table handle {table_handle}, txn version {txn_version}"
+                            )) {
+                                Ok(ca) => ca,
+                                Err(_) => {
+                                    // Try our best by getting from the older collection data
+                                    match CollectionData::get_collection_creator(
+                                        &mut db_context.conn,
+                                        &table_handle,
+                                        db_context.query_retries,
+                                        db_context.query_retry_delay_ms,
+                                    )
+                                    .await
+                                    {
+                                        Ok(creator) => creator,
+                                        Err(_) => {
+                                            tracing::error!(
+                                                transaction_version = txn_version,
+                                                lookup_key = &table_handle,
+                                                "Failed to get collection v2 creator for table handle. You probably should backfill db."
+                                            );
+                                            return Ok(None);
+                                        },
+                                    }
+                                },
+                            }
+                        },
+                    }
                 },
             };
             creator_address = standardize_address(&creator_address);

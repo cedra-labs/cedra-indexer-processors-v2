@@ -1,5 +1,5 @@
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
+use cedra_indexer_processor_sdk::testing_framework::sdk_test_context::SdkTestContext;
 use processor::{
     config::{
         db_config::{DbConfig, PostgresConfig},
@@ -57,14 +57,14 @@ mod sdk_token_v2_processor_tests {
     use super::setup_token_v2_processor_config;
     use crate::{
         diff_test_helper::token_v2_processor::load_data,
-        sdk_tests::test_helpers::{
+        sdk_tests::{
             run_processor_test, setup_test_environment, validate_json, DEFAULT_OUTPUT_FOLDER,
         },
     };
-    use aptos_indexer_processor_sdk::testing_framework::{
+    use cedra_indexer_processor_sdk::testing_framework::{
         cli_parser::get_test_config, database::TestDatabase,
     };
-    use aptos_indexer_test_transactions::json_transactions::generated_transactions::{
+    use cedra_indexer_test_transactions::json_transactions::generated_transactions::{
         IMPORTED_DEVNET_TXNS_19922017_TOKEN_V1_OFFER_CLAIM,
         IMPORTED_DEVNET_TXNS_78753831_TOKEN_V1_MINT_TRANSFER_WITH_V2_EVENTS,
         IMPORTED_DEVNET_TXNS_78753832_TOKEN_V2_MINT_TRANSFER_WITH_V2_EVENTS,
@@ -73,15 +73,14 @@ mod sdk_token_v2_processor_tests {
         IMPORTED_MAINNET_TXNS_11648867_TOKEN_V1_BURN_EVENT,
         IMPORTED_MAINNET_TXNS_141135867_TOKEN_V1_OFFER,
         IMPORTED_MAINNET_TXNS_178179220_TOKEN_V1_MUTATE_EVENT,
-        IMPORTED_MAINNET_TXNS_3020266695_TOKEN_V1_OFFER_MODULE_EVENT,
         IMPORTED_MAINNET_TXNS_325355235_TOKEN_V2_UNLIMITED_SUPPLY_MINT,
         IMPORTED_MAINNET_TXNS_445585423_TOKEN_MINT_AND_BURN_EVENT,
         IMPORTED_MAINNET_TXNS_453498957_TOKEN_V2_MINT_AND_TRANSFER_EVENT_V1,
         IMPORTED_MAINNET_TXNS_537250181_TOKEN_V2_FIXED_SUPPLY_MINT,
         IMPORTED_MAINNET_TXNS_578366445_TOKEN_V2_BURN_EVENT_V2,
-        IMPORTED_MAINNET_TXNS_84023785_TOKEN_V1_CLAIM_OFFER,
+        IMPORTED_MAINNET_TXNS_84023785_TOKEN_V2_CLAIM_OFFER,
         IMPORTED_MAINNET_TXNS_967255533_TOKEN_V2_MUTATION_EVENT,
-        IMPORTED_MAINNET_TXNS_97963136_TOKEN_V1_CANCEL_OFFER,
+        IMPORTED_MAINNET_TXNS_97963136_TOKEN_V2_CANCEL_OFFER,
         IMPORTED_MAINNET_TXNS_999930475_TOKEN_V2_CONCURRENT_MINT,
     };
     use processor::processors::token_v2::token_v2_processor::TokenV2Processor;
@@ -89,10 +88,10 @@ mod sdk_token_v2_processor_tests {
     /**
     * This test includes processing for the following:
     * - Resources
-    *      - 0x4::aptos_token::AptosCollection
+    *      - 0x4::cedra_token::CedraCollection
     *      - 0x4::collection::Collection
     *      - 0x4::collection::ConcurrentSupply
-    *      - 0x4::aptos_token::AptosToken
+    *      - 0x4::cedra_token::CedraToken
     *      - 0x4::property_map::PropertyMap
     *      - 0x4::token::Token
 
@@ -100,10 +99,10 @@ mod sdk_token_v2_processor_tests {
     *      - 0x4::collection::Mint
     */
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-    async fn test_token_v2_concurrent_aptos_mint() {
+    async fn test_token_v2_concurrent_cedra_mint() {
         process_single_transaction(
             IMPORTED_MAINNET_TXNS_999930475_TOKEN_V2_CONCURRENT_MINT,
-            Some("test_token_v2_concurrent_aptos_mint".to_string()),
+            Some("test_token_v2_concurrent_cedra_mint".to_string()),
         )
         .await;
     }
@@ -148,10 +147,10 @@ mod sdk_token_v2_processor_tests {
     /**
     * This test includes processing for the following:
     * - Resources
-    *      - 0x4::aptos_token::AptosCollection
+    *      - 0x4::cedra_token::CedraCollection
     *      - 0x4::collection::Collection
     *      - 0x4::collection::FixedSupply
-    *      - 0x4::aptos_token::AptosToken
+    *      - 0x4::cedra_token::CedraToken
     *      - 0x4::property_map::PropertyMap
     *      - 0x4::token::Token
 
@@ -171,10 +170,10 @@ mod sdk_token_v2_processor_tests {
     /**
     * This test includes processing for the following:
     * - Resources
-    *      - 0x4::aptos_token::AptosCollection
+    *      - 0x4::cedra_token::CedraCollection
     *      - 0x4::collection::Collection
     *      - 0x4::collection::FixedSupply
-    *      - 0x4::aptos_token::AptosToken
+    *      - 0x4::cedra_token::CedraToken
     *      - 0x4::property_map::PropertyMap
     *      - 0x4::token::Token
 
@@ -193,7 +192,7 @@ mod sdk_token_v2_processor_tests {
     /**
     * This test includes processing for the following:
     * - Resources
-    *      - 0x4::aptos_token::AptosCollection
+    *      - 0x4::cedra_token::CedraCollection
     *      - 0x4::collection::Collection
     *      - 0x4::collection::ConcurrentSupply
     * - Events
@@ -285,15 +284,6 @@ mod sdk_token_v2_processor_tests {
         .await;
     }
 
-    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-    async fn test_token_v1_offer_with_module_events() {
-        process_single_transaction(
-            IMPORTED_MAINNET_TXNS_3020266695_TOKEN_V1_OFFER_MODULE_EVENT,
-            Some("test_token_v1_offer_with_module_events".to_string()),
-        )
-        .await;
-    }
-
     /**
     * This test includes processing for the following:
     * - Resources
@@ -326,7 +316,7 @@ mod sdk_token_v2_processor_tests {
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
     async fn test_token_v1_claim_offer() {
         process_single_transaction(
-            IMPORTED_MAINNET_TXNS_84023785_TOKEN_V1_CLAIM_OFFER,
+            IMPORTED_MAINNET_TXNS_84023785_TOKEN_V2_CLAIM_OFFER,
             Some("test_token_v1_claim_offer".to_string()),
         )
         .await;
@@ -354,7 +344,7 @@ mod sdk_token_v2_processor_tests {
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
     async fn test_token_v1_cancel_offer() {
         process_single_transaction(
-            IMPORTED_MAINNET_TXNS_97963136_TOKEN_V1_CANCEL_OFFER,
+            IMPORTED_MAINNET_TXNS_97963136_TOKEN_V2_CANCEL_OFFER,
             Some("test_token_v1_cancel_offer".to_string()),
         )
         .await;
@@ -378,8 +368,17 @@ mod sdk_token_v2_processor_tests {
         .await;
     }
 
+    /**
+     * This test includes processing for the following:
+     * - Events
+     *      - 0x1::fungible_asset::MintEvent
+     *      - 0x1::fungible_asset::BurnEvent
+     * - Resources
+     *      - 0x1::fungible_asset::Supply
+     *      - 0x1::fungible_asset::Metadata
+     */
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-    async fn test_token_v2_mint_and_burn_event() {
+    async fn test_fungible_asset_processor_mint_and_burn_event() {
         process_single_transaction(
             IMPORTED_MAINNET_TXNS_445585423_TOKEN_MINT_AND_BURN_EVENT,
             Some("mint_and_burn_event".to_string()),

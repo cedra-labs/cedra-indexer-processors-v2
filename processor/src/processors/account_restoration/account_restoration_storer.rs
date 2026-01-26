@@ -9,7 +9,7 @@ use crate::{
 };
 use ahash::AHashMap;
 use anyhow::Result;
-use aptos_indexer_processor_sdk::{
+use cedra_indexer_processor_sdk::{
     postgres::utils::database::{execute_in_chunks, get_config_table_chunk_size, ArcDbPool},
     traits::{AsyncRunType, AsyncStep, NamedStep, Processable},
     types::transaction_context::TransactionContext,

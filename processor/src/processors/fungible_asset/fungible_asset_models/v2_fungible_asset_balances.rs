@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -12,7 +12,7 @@ use super::{
     v2_fungible_asset_to_coin_mappings::{FungibleAssetToCoinMapping, FungibleAssetToCoinMappings},
 };
 use crate::{
-    db::resources::{FromWriteResource, BURN_ADDR},
+    db::resources::FromWriteResource,
     parquet_processors::parquet_utils::util::{HasVersion, NamedTable},
     processors::{
         default::models::move_resources::MoveResource,
@@ -23,7 +23,7 @@ use crate::{
                 v2_fungible_asset_utils::FungibleAssetStore,
             },
         },
-        objects::v2_object_utils::{ObjectAggregatedDataMapping, ObjectCore},
+        objects::v2_object_utils::ObjectAggregatedDataMapping,
         token_v2::token_v2_models::v2_token_utils::TokenStandard,
     },
     schema::{
@@ -33,10 +33,10 @@ use crate::{
 };
 use ahash::AHashMap;
 use allocative_derive::Allocative;
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::{DeleteResource, WriteResource},
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::{DeleteResource, WriteResource},
     utils::{
-        constants::{APTOS_COIN_TYPE_STR, APT_METADATA_ADDRESS_HEX, APT_METADATA_ADDRESS_RAW},
+        constants::{CEDRA_COIN_TYPE_STR, CEDRA_METADATA_ADDRESS_HEX, CEDRA_METADATA_ADDRESS_RAW},
         convert::{hex_to_raw_bytes, sha3_256, standardize_address},
     },
 };
@@ -88,10 +88,10 @@ pub struct CurrentUnifiedFungibleAssetBalance {
 }
 
 pub fn get_paired_metadata_address(coin_type_name: &str) -> String {
-    if coin_type_name == APTOS_COIN_TYPE_STR {
-        APT_METADATA_ADDRESS_HEX.clone()
+    if coin_type_name == CEDRA_COIN_TYPE_STR {
+        CEDRA_METADATA_ADDRESS_HEX.clone()
     } else {
-        let mut preimage = APT_METADATA_ADDRESS_RAW.to_vec();
+        let mut preimage = CEDRA_METADATA_ADDRESS_RAW.to_vec();
         preimage.extend(coin_type_name.as_bytes());
         preimage.push(0xFE);
         format!("0x{}", hex::encode(sha3_256(&preimage)))
@@ -205,18 +205,13 @@ impl FungibleAssetBalance {
         txn_version: i64,
         txn_timestamp: chrono::NaiveDateTime,
         object_metadatas: &ObjectAggregatedDataMapping,
-        store_address_to_deleted_fa_store_events: &StoreAddressToDeletedFungibleAssetStoreEvent,
     ) -> anyhow::Result<Option<Self>> {
         if let Some(inner) = &FungibleAssetStore::from_write_resource(write_resource)? {
             let storage_id = standardize_address(write_resource.address.as_str());
-
             // Need to get the object of the store
             if let Some(object_data) = object_metadatas.get(&storage_id) {
-                let owner_address = object_data
-                    .get_owner_address()
-                    // If there is no ObjectCore resource, then this FA store is defacto ownerless, so
-                    // set the owner to the burn address.
-                    .unwrap_or(String::from(BURN_ADDR));
+                let object = &object_data.object.object_core;
+                let owner_address = object.get_owner_address();
                 let asset_type = inner.metadata.get_reference_address();
                 let is_primary = Self::is_primary(&owner_address, &asset_type, &storage_id);
 
@@ -243,29 +238,6 @@ impl FungibleAssetBalance {
                     token_standard: TokenStandard::V2.to_string(),
                 };
                 return Ok(Some(coin_balance));
-            }
-        } else if let Some(inner) = &ObjectCore::from_write_resource(write_resource)? {
-            // Need to handle the case where the object / resource group still exists, but the fungible store is deleted
-            // We handle this here because even though the store is deleted, its resource group would still be emitted
-            // as a write resource in the transaction
-            let storage_id = standardize_address(write_resource.address.as_str());
-            if let Some(deleted_fa_store_event) =
-                store_address_to_deleted_fa_store_events.get(&storage_id)
-            {
-                let asset_type = standardize_address(deleted_fa_store_event.metadata.as_str());
-                let balance = Self {
-                    transaction_version: txn_version,
-                    write_set_change_index,
-                    storage_id: storage_id.clone(),
-                    owner_address: inner.get_owner_address(),
-                    asset_type: asset_type.clone(),
-                    is_primary: false, // Deleted stores can only be secondary
-                    is_frozen: false,
-                    amount: BigDecimal::zero(),
-                    transaction_timestamp: txn_timestamp,
-                    token_standard: TokenStandard::V2.to_string(),
-                };
-                return Ok(Some(balance));
             }
         }
 
@@ -472,6 +444,33 @@ impl From<FungibleAssetBalance> for ParquetFungibleAssetBalance {
 #[derive(
     Allocative, Clone, Debug, Default, Deserialize, FieldCount, ParquetRecordWriter, Serialize,
 )]
+pub struct ParquetCurrentFungibleAssetBalance {
+    pub storage_id: String,
+    pub owner_address: String,
+    pub asset_type: String,
+    pub is_primary: bool,
+    pub is_frozen: bool,
+    pub amount: String, // it is a string representation of the u128
+    pub last_transaction_version: i64,
+    #[allocative(skip)]
+    pub last_transaction_timestamp: chrono::NaiveDateTime,
+    pub token_standard: String,
+}
+
+impl NamedTable for ParquetCurrentFungibleAssetBalance {
+    const TABLE_NAME: &'static str = "current_fungible_asset_balances_legacy";
+}
+
+impl HasVersion for ParquetCurrentFungibleAssetBalance {
+    fn version(&self) -> i64 {
+        self.last_transaction_version
+    }
+}
+/// Note that this used to be called current_unified_fungible_asset_balances_to_be_renamed
+/// and was renamed to current_fungible_asset_balances to facilitate migration
+#[derive(
+    Allocative, Clone, Debug, Default, Deserialize, FieldCount, ParquetRecordWriter, Serialize,
+)]
 pub struct ParquetCurrentUnifiedFungibleAssetBalance {
     pub storage_id: String,
     pub owner_address: String,
@@ -658,8 +657,8 @@ mod tests {
     #[test]
     fn test_paired_metadata_address() {
         assert_eq!(
-            get_paired_metadata_address("0x1::aptos_coin::AptosCoin"),
-            *APT_METADATA_ADDRESS_HEX
+            get_paired_metadata_address("0x1::cedra_coin::CedraCoin"),
+            *CEDRA_METADATA_ADDRESS_HEX
         );
         assert_eq!(get_paired_metadata_address("0x66c34778730acbb120cefa57a3d98fd21e0c8b3a51e9baee530088b2e444e94c::moon_coin::MoonCoin"), "0xf772c28c069aa7e4417d85d771957eb3c5c11b5bf90b1965cda23b899ebc0384");
     }

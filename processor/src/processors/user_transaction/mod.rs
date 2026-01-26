@@ -1,6 +1,8 @@
 pub mod models;
 pub mod user_transaction_extractor;
 pub mod user_transaction_processor;
+// pub mod user_transaction_processor_helpers;
+// pub mod user_transaction_queries;
 pub mod user_transaction_storer;
 
 use crate::{
@@ -12,7 +14,7 @@ use crate::{
     },
     utils::counters::PROCESSOR_UNKNOWN_TYPE_COUNT,
 };
-use aptos_indexer_processor_sdk::aptos_protos::transaction::v1::{
+use cedra_indexer_processor_sdk::cedra_protos::transaction::v1::{
     transaction::TxnData, Transaction,
 };
 

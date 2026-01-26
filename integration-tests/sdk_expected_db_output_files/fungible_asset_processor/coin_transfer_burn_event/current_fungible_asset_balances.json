@@ -3,7 +3,7 @@
     "storage_id": "0x34855d3bba09680cd7d8fb7da8e759c09a12dae2ad50fb085aff6f2e61e624d8",
     "owner_address": "0x23f012877d031cb49f2ef943e982fd92b9ca442e767755565af35174c42c7576",
     "asset_type_v2": null,
-    "asset_type_v1": "0x1::aptos_coin::AptosCoin",
+    "asset_type_v1": "0x1::cedra_coin::CedraCoin",
     "is_primary": true,
     "is_frozen": false,
     "amount_v1": "108852914",
@@ -16,6 +16,6 @@
     "last_transaction_timestamp_v2": null,
     "last_transaction_timestamp": "2024-09-29T04:52:28",
     "token_standard": "v1",
-    "asset_type": "0x1::aptos_coin::AptosCoin"
+    "asset_type": "0x1::cedra_coin::CedraCoin"
   }
 ]

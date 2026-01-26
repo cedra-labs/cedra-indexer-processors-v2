@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -8,8 +8,8 @@ use crate::processors::token_v2::{
     token_models::token_utils::URI_LENGTH, token_v2_models::v2_token_utils::ResourceReference,
 };
 use anyhow::{Context, Result};
-use aptos_indexer_processor_sdk::{
-    aptos_protos::transaction::v1::WriteResource,
+use cedra_indexer_processor_sdk::{
+    cedra_protos::transaction::v1::WriteResource,
     utils::{
         convert::{deserialize_from_string, truncate_str},
         extract::Aggregator,
@@ -21,6 +21,20 @@ use serde::{Deserialize, Serialize};
 
 const FUNGIBLE_ASSET_LENGTH: usize = 32;
 const FUNGIBLE_ASSET_SYMBOL: usize = 32;
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct CustomFeeStatement {
+    #[serde(deserialize_with = "deserialize_from_string")]
+    pub storage_fee_refund_octas: u64,
+}
+
+impl From<CustomFeeStatement> for FeeStatement {
+    fn from(c: CustomFeeStatement) -> Self {
+        FeeStatement {
+            storage_fee_refund_octas: c.storage_fee_refund_octas,
+        }
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FeeStatement {
@@ -40,6 +54,16 @@ impl FeeStatement {
                 panic!();
             });
             Some(fee_statement)
+        } else if data_type == "0x1::transaction_fee::CustomFeeStatement" {
+            let custom_fee_statement: CustomFeeStatement = serde_json::from_str(data).unwrap_or_else(|_| {
+                tracing::error!(
+                    transaction_version = txn_version,
+                    data = data,
+                    "failed to parse event for fee statement"
+                );
+                panic!();
+            });
+            Some(custom_fee_statement.into())
         } else {
             None
         }

@@ -1,4 +1,4 @@
-// Copyright © Aptos Foundation
+// Copyright © Cedra Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 // This is required because a diesel macro makes clippy sad
@@ -8,9 +8,9 @@ use crate::{
     processors::stake::models::stake_utils::StakeResource, schema::current_staking_pool_voter,
 };
 use ahash::AHashMap;
-use aptos_indexer_processor_sdk::{
-    aptos_indexer_transaction_stream::utils::time::parse_timestamp,
-    aptos_protos::transaction::v1::{write_set_change::Change, Transaction},
+use cedra_indexer_processor_sdk::{
+    cedra_indexer_transaction_stream::utils::time::parse_timestamp,
+    cedra_protos::transaction::v1::{write_set_change::Change, Transaction},
     utils::convert::standardize_address,
 };
 use field_count::FieldCount;
