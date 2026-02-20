@@ -1,0 +1,124 @@
+                                 CEDRA.NETWORK CODE LICENSE
+
+Version 1.0
+Dated: 2026-01-26T10:56:24Z
+
+Copyright © Cedra Ltd.
+All rights reserved.
+
+This repository contains software that is a fork and/or derivative of software originally 
+licensed under the Apache License, Version 2.0.
+
+The Licensor represents that it is authorized to distribute this fork pursuant to the terms 
+of the Apache License, Version 2.0, and this License is intended to supplement, and not 
+replace, the Apache License, Version 2.0 where applicable.
+
+To the extent of any conflict, the Apache License, Version 2.0 shall govern the underlying 
+upstream components, and this License shall govern Cedra-specific modifications, additions, and distributions.
+
+
+1. Definitions
+
+      “License” shall mean the terms and conditions for use, reproduction, and distribution as 
+      defined in this document.
+      
+      “Licensor” shall mean Cedra Ltd and any entity authorized to distribute the Licensed Work.
+      
+      “Licensed Work” shall mean the work of authorship made available under this License, 
+      including all Cedra-specific modifications, improvements, extensions, documentation, 
+      and configuration files, as indicated by a copyright notice included in or attached to the work.
+
+      “Upstream Work” shall mean any software originally licensed under the Apache License, Version 2.0, 
+      from which the Licensed Work is forked or derived.
+
+      “Derivative Works” shall mean any work based upon the Licensed Work as defined under applicable copyright law, 
+      excluding works that remain separable from, or merely link to, the interfaces of the Licensed Work.
+
+      “You” or “Your” shall mean an individual or Legal Entity exercising permissions granted by this License.
+
+
+2. Grant of Copyright License
+
+      Subject to the terms and conditions of this License and the Apache License, Version 2.0, 
+      Licensor hereby grants to You a perpetual, worldwide, non-exclusive, royalty-free license to:
+      (a) reproduce the Licensed Work;
+      (b) prepare Derivative Works of the Licensed Work;
+      (c) publicly display and publicly perform the Licensed Work; and
+      (d) distribute the Licensed Work and Derivative Works thereof in Source or Object form.
+
+      All such rights are granted solely to the extent Licensor holds sufficient rights in the Licensed Work.
+
+
+3. Acknowledgment of Fork Status
+
+      The Licensed Work is a fork of software originally licensed under the Apache License, Version 2.0.
+      Nothing in this License shall be construed as:
+      (a) granting rights in the Upstream Work beyond those provided under the Apache License, Version 2.0;
+      (b) representing ownership of third-party intellectual property; or
+      (c) providing any warranty of non-infringement with respect to upstream or third-party code.
+
+      You acknowledge that use of the Licensed Work may incorporate components 
+      developed by third parties and subject to separate license terms.
+
+
+4. No Liability for Third-Party Claims
+
+      To the maximum extent permitted by applicable law:
+      (a) The Licensed Work is provided on an “AS IS” basis;
+      (b) Licensor makes no representation or warranty that the Licensed Work does not infringe 
+      the intellectual property rights of any third party;
+      c) Licensor shall not be liable for any claim, demand, action, or proceeding arising from or 
+      relating to alleged infringement of third-party copyrights, patents, trademarks, or other proprietary 
+      rights in connection with Your use, modification, distribution, or deployment of the Licensed Work.
+
+      You assume sole responsibility for conducting Your own legal review, due diligence, and 
+      risk assessment prior to commercial or production use.
+
+
+5. Redistribution Conditions
+
+      You may reproduce and distribute copies of the Licensed Work or Derivative Works thereof provided that You:
+      (a) include a copy of this License;
+      (b) include a copy of the Apache License, Version 2.0 where applicable;
+      (c) retain all copyright, patent, trademark, and attribution notices;
+      (d) clearly state any modifications made to the Licensed Work.
+
+      Failure to comply with these conditions shall automatically terminate Your rights under this License.
+
+
+6. Trademarks
+
+      This License does not grant permission to use the trade names, trademarks, service marks, 
+      logos, or product names of Cedra Ltd., except for reasonable and customary use in 
+      describing the origin of the Licensed Work.
+
+
+7. Disclaimer of Warranty
+
+      UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, THE LICENSED WORK 
+      IS PROVIDED ON AN “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+      WHETHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY WARRANTIES OF TITLE, NON-INFRINGEMENT, 
+      MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+
+
+8. Limitation of Liability
+
+      IN NO EVENT AND UNDER NO LEGAL THEORY, WHETHER IN TORT, CONTRACT, OR OTHERWISE, 
+      SHALL LICENSOR BE LIABLE TO YOU OR ANY THIRD PARTY FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+      SPECIAL, CONSEQUENTIAL, OR EXEMPLARY DAMAGES ARISING OUT OF OR RELATED TO THIS LICENSE 
+      OR THE USE OF THE LICENSED WORK, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+
+9. Termination
+
+      Any use of the Licensed Work in violation of this License shall automatically terminate the rights granted herein.
+      Upon termination, You must cease use and distribution of the Licensed Work.
+
+
+10. Governing Law
+
+      This License shall be governed by and construed in accordance with the laws 
+      applicable to the Licensor’s principal place of establishment, without regard to conflict of law principles.
+
+
+END OF TERMS
