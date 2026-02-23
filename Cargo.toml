@@ -22,12 +22,11 @@ ahash = { version = "0.8.7", features = ["serde"] }
 anyhow = "1.0.98"
 # Do NOT enable the postgres_full feature here, it is conditionally enabled in a feature
 # block in the Cargo.toml file for the processor crate.
-# https://github.com/cedra-labs/cedra-indexer-processors/pull/325
 # Do NOT enable the testing_framework feature here, it is conditionally enabled as a dev dependency
 # in the integration-tests/Cargo.toml file.
 cedra-indexer-processor-sdk = { git = "https://github.com/cedra-labs/cedra-indexer-processor-sdk.git", features = [
         "postgres_partial",
-], rev="ec87f8aab59e83eb39d326161a84bed9dd1a6c39" } 
+], rev="9fa9182285cf696da11a126f9739258afc72a3e2" } 
 cedra-indexer-test-transactions = { git = "https://github.com/cedra-labs/cedra-network.git", rev="e8b7b18c6b07f5338af169246ada024a8a5ca4f6" }
 async-trait = "0.1.53"
 backtrace = "0.3.58"
@@ -41,7 +40,6 @@ clap = { version = "4.3.5", features = ["derive", "unstable-styles"] }
 const_format = "0.2.33"
 # Do NOT enable the postgres feature here, it is conditionally enabled in a feature
 # block in the Cargo.toml file for the processor crate.
-# https://github.com/cedra-labs/cedra-indexer-processors/pull/325
 diesel = { version = "=2.2.0", features = [
     "chrono",
     "postgres_backend",
